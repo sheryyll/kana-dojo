@@ -8,26 +8,61 @@ import { ChevronUp } from 'lucide-react';
 
 const STORAGE_KEY = 'kana-hidden-subsets';
 
-const DEFAULT_HIDDEN_SUBSETS = [
-  'hdakuon',
-  'hyoon',
-  'kdakuon',
-  'kyoon',
-  'kforeign sounds',
-  'challenge チャレンジ',
-  'csimilar hiragana',
-  'cconfusing katakana'
+const DEFAULT_SHOWN_SUBSETS = [
+  'hiragana ひらがな',
+  'hbase',
+  'katakana カタカナ',
+  'kbase'
 ];
 
+const kanaGroups = [
+  {
+    name: 'Hiragana ひらがな',
+    subsets: [
+      { name: 'HBase', sliceRange: [0, 10] },
+      { name: 'HDakuon', sliceRange: [10, 15] },
+      { name: 'HYoon', sliceRange: [15, 26] }
+    ]
+  },
+  {
+    name: 'Katakana カタカナ',
+    subsets: [
+      { name: 'KBase', sliceRange: [26, 36] },
+      { name: 'KDakuon', sliceRange: [36, 41] },
+      { name: 'KYoon', sliceRange: [41, 52] },
+      { name: 'KForeign Sounds', sliceRange: [52, 60] }
+    ]
+  },
+  {
+    name: 'Challenge チャレンジ',
+    subsets: [
+      { name: 'CSimilar Hiragana', sliceRange: [60, 65] },
+      { name: 'CConfusing Katakana', sliceRange: [65, 69] }
+    ]
+  }
+];
+
+const getDefaultHiddenSubsets = () => {
+  const allToggleKeys = kanaGroups.flatMap((group) => [
+    group.name.toLowerCase(),
+    ...group.subsets.map((subset) => subset.name.toLowerCase())
+  ]);
+
+  const shown = new Set(
+    DEFAULT_SHOWN_SUBSETS.map((name) => name.toLowerCase())
+  );
+  return allToggleKeys.filter((key) => !shown.has(key));
+};
+
 const getInitialState = (): string[] => {
-  if (typeof window === 'undefined') return DEFAULT_HIDDEN_SUBSETS;
+  if (typeof window === 'undefined') return getDefaultHiddenSubsets();
 
   try {
     const stored = sessionStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : DEFAULT_HIDDEN_SUBSETS;
+    return stored ? JSON.parse(stored) : getDefaultHiddenSubsets();
   } catch (error) {
     console.error('Failed to load from session storage:', error);
-    return DEFAULT_HIDDEN_SUBSETS;
+    return getDefaultHiddenSubsets();
   }
 };
 
@@ -41,33 +76,6 @@ const saveToSessionStorage = (hiddenSubsets: string[]) => {
 
 const KanaCards = () => {
   const { playClick } = useClick();
-
-  const kanaGroups = [
-    {
-      name: 'Hiragana ひらがな',
-      subsets: [
-        { name: 'HBase', sliceRange: [0, 10] },
-        { name: 'HDakuon', sliceRange: [10, 15] },
-        { name: 'HYoon', sliceRange: [15, 26] }
-      ]
-    },
-    {
-      name: 'Katakana カタカナ',
-      subsets: [
-        { name: 'KBase', sliceRange: [26, 36] },
-        { name: 'KDakuon', sliceRange: [36, 41] },
-        { name: 'KYoon', sliceRange: [41, 52] },
-        { name: 'KForeign Sounds', sliceRange: [52, 60] }
-      ]
-    },
-    {
-      name: 'Challenge チャレンジ',
-      subsets: [
-        { name: 'CSimilar Hiragana', sliceRange: [60, 65] },
-        { name: 'CConfusing Katakana', sliceRange: [65, 69] }
-      ]
-    }
-  ];
 
   const [hiddenSubsets, setHiddenSubsets] = useState<string[]>(getInitialState);
 
