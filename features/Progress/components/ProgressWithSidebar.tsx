@@ -56,7 +56,7 @@ const ProgressWithSidebar = () => {
                 borderColorScheme={isSelected ? 'main' : undefined}
                 borderBottomThickness={isSelected ? 6 : 0}
                 className={cn(
-                  'w-auto gap-1.5 px-5 py-2.5 text-sm sm:gap-2',
+                  'w-auto gap-1.5 px-5 py-2.5 sm:gap-2 text-sm ',
                   !isSelected &&
                     'bg-transparent text-[var(--secondary-color)] hover:bg-[var(--border-color)]/50 hover:text-[var(--main-color)]'
                 )}
