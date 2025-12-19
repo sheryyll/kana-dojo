@@ -241,6 +241,7 @@ const PickGame = ({ isHidden }: PickGameProps) => {
     if (isReverse) {
       speedStopwatch.start();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isReverse,
     correctRomajiCharReverse,
@@ -249,6 +250,7 @@ const PickGame = ({ isHidden }: PickGameProps) => {
     correctKanaCharReverse,
     optionCount,
     getIncorrectOptions
+    // speedStopwatch intentionally excluded - only calling methods, not reading values
   ]);
 
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -270,7 +272,8 @@ const PickGame = ({ isHidden }: PickGameProps) => {
 
   useEffect(() => {
     if (isHidden) speedStopwatch.pause();
-  }, [isHidden]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHidden]); // speedStopwatch intentionally excluded - only calling methods
 
   // Split variants into rows: first row always has 3, second row has the rest (0-3)
   const { topRow, bottomRow } = useMemo(() => {
@@ -299,6 +302,7 @@ const PickGame = ({ isHidden }: PickGameProps) => {
       // Progressive difficulty - track correct answer
       recordDifficultyCorrect();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       addCorrectAnswerTime,
       playCorrect,
@@ -308,9 +312,9 @@ const PickGame = ({ isHidden }: PickGameProps) => {
       score,
       setScore,
       triggerCrazyMode,
-      adaptiveSelector,
       decideNextMode,
       recordDifficultyCorrect
+      // speedStopwatch, adaptiveSelector intentionally excluded
     ]
   );
 
@@ -347,7 +351,6 @@ const PickGame = ({ isHidden }: PickGameProps) => {
       score,
       setScore,
       triggerCrazyMode,
-      adaptiveSelector,
       recordWrongAnswer,
       recordDifficultyWrong
     ]
@@ -417,7 +420,6 @@ const PickGame = ({ isHidden }: PickGameProps) => {
       correctRomajiChar,
       handleCorrectAnswer,
       correctKanaChar,
-      adaptiveSelector,
       selectedKana,
       handleWrongAnswer,
       reversedPairs1,
