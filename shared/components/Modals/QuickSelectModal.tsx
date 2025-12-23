@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { X, CircleCheck, Circle, Check, Trash2, Dices } from 'lucide-react';
 import { useClick } from '@/shared/hooks/useAudio';
 import { ActionButton } from '@/shared/components/ui/ActionButton';
+import { cn } from '@/shared/lib/utils';
 
 // Canary change: verifying Husky/Prettier pre-commit formatting.
 // Canary change #2: verifying jsxSingleQuote formatting in JSX attributes.
@@ -154,7 +155,13 @@ const QuickSelectModal = ({
                   )}
                 >
                   {btn.icon ? (
-                    <btn.icon size={16} className='fill-current text-current' />
+                    <btn.icon
+                      size={16}
+                      className={cn(
+                        'fill-current text-current',
+                        btn.label === 'Clear All' && 'px-2'
+                      )}
+                    />
                   ) : null}
                   {btn.iconOnly ? (
                     <span className='sr-only'>{btn.label}</span>
@@ -218,7 +225,7 @@ const QuickSelectModal = ({
                     {isSelected ? (
                       <CircleCheck
                         size={18}
-                        className='flex-shrink-0 text-[var(--background-color)] fill-current'
+                        className='flex-shrink-0 fill-current text-[var(--background-color)]'
                       />
                     ) : (
                       <Circle

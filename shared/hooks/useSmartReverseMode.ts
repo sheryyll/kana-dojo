@@ -28,10 +28,10 @@ interface SmartReverseModeOptions {
  */
 export const useSmartReverseMode = (options: SmartReverseModeOptions = {}) => {
   const {
-    baseProbability = 0.2,
-    incrementPerCorrect = 0.08,
-    maxProbability = 0.5,
-    forceSwitchInterval = 2
+    baseProbability = 0.1,
+    incrementPerCorrect = 0.1,
+    maxProbability = 0.4,
+    forceSwitchInterval = 3
   } = options;
 
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
