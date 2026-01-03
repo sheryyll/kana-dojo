@@ -29,6 +29,38 @@ const springConfig = {
   mass: 0.8
 };
 
+// Premium entry animation variants for option tiles
+const tileContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.15
+    }
+  }
+};
+
+const tileEntryVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.7,
+    y: 20,
+    rotateX: -15
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    rotateX: 0,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 350,
+      damping: 25,
+      mass: 0.8
+    }
+  }
+};
+
 // Helper function to determine if a kana character is hiragana or katakana
 const isHiragana = (char: string): boolean => {
   const code = char.charCodeAt(0);
@@ -479,11 +511,16 @@ const WordBuildingGame = ({
         const topRowTiles = wordData.allTiles.slice(0, tilesPerRow);
         const bottomRowTiles = wordData.allTiles.slice(tilesPerRow);
 
-        const renderTile = (char: string) => {
+        const renderTile = (char: string, index: number) => {
           const isPlaced = placedTiles.includes(char);
 
           return (
-            <div key={`tile-slot-${char}`} className='relative'>
+            <motion.div
+              key={`tile-slot-${char}`}
+              className='relative'
+              variants={tileEntryVariants}
+              style={{ perspective: 1000 }}
+            >
               {/* Blank tile is ALWAYS rendered underneath (z-0) */}
               <BlankTile char={char} />
 
@@ -499,21 +536,29 @@ const WordBuildingGame = ({
                   />
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         };
 
         return (
-          <div className='flex flex-col items-center gap-3 sm:gap-4'>
-            <div className='flex flex-row justify-center gap-3 sm:gap-4'>
-              {topRowTiles.map(renderTile)}
-            </div>
+          <motion.div
+            key={wordData.wordChars.join('')}
+            className='flex flex-col items-center gap-3 sm:gap-4'
+            variants={tileContainerVariants}
+            initial='hidden'
+            animate='visible'
+          >
+            <motion.div className='flex flex-row justify-center gap-3 sm:gap-4'>
+              {topRowTiles.map((char, i) => renderTile(char, i))}
+            </motion.div>
             {bottomRowTiles.length > 0 && (
-              <div className='flex flex-row justify-center gap-3 sm:gap-4'>
-                {bottomRowTiles.map(renderTile)}
-              </div>
+              <motion.div className='flex flex-row justify-center gap-3 sm:gap-4'>
+                {bottomRowTiles.map((char, i) =>
+                  renderTile(char, i + tilesPerRow)
+                )}
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         );
       })()}
 
