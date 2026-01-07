@@ -3,7 +3,7 @@ import { useJapaneseTTS } from '@/shared/hooks/useJapaneseTTS';
 import { Volume2, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 import { buttonBorderStyles } from '@/shared/lib/styles';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import { useAudioPreferences } from '@/features/Preferences';
 
 interface AudioButtonProps {
   text: string;
@@ -28,15 +28,8 @@ const AudioButton: React.FC<AudioButtonProps> = ({
     useJapaneseTTS();
 
   // Get pronunciation settings from theme store
-  const pronunciationEnabled = usePreferencesStore(
-    state => state.pronunciationEnabled
-  );
-  const pronunciationSpeed = usePreferencesStore(
-    state => state.pronunciationSpeed
-  );
-  const pronunciationPitch = usePreferencesStore(
-    state => state.pronunciationPitch
-  );
+  const { pronunciationEnabled, pronunciationSpeed, pronunciationPitch } =
+    useAudioPreferences();
 
   const handleClick = async () => {
     if (disabled || !pronunciationEnabled) return;
@@ -88,12 +81,12 @@ const AudioButton: React.FC<AudioButtonProps> = ({
         onClick={handleClick}
         className={clsx(
           'rounded-full transition-all duration-200',
-          ' active:scale-95',
+          'active:scale-95',
           'flex items-center justify-center',
           sizeClasses[size],
           className
         )}
-        title="Try pronunciation (may work in some browsers)"
+        title='Try pronunciation (may work in some browsers)'
       >
         <Volume2 size={iconSizes[size]} />
       </button>
@@ -102,7 +95,7 @@ const AudioButton: React.FC<AudioButtonProps> = ({
 
   const getIcon = () => {
     if (isPlaying) {
-      return <Loader2 size={iconSizes[size]} className="animate-spin" />;
+      return <Loader2 size={iconSizes[size]} className='animate-spin' />;
     }
     return <Volume2 size={iconSizes[size]} />;
   };
@@ -114,8 +107,8 @@ const AudioButton: React.FC<AudioButtonProps> = ({
         disabled={disabled}
         className={clsx(
           'rounded-full transition-all duration-275',
-          'active:scale-95 hover:cursor-pointer hover:bg-[var(--border-color)]',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'hover:cursor-pointer hover:bg-[var(--border-color)] active:scale-95',
+          'disabled:cursor-not-allowed disabled:opacity-50',
           'flex items-center justify-center',
           sizeClasses[size],
           className
@@ -135,7 +128,7 @@ const AudioButton: React.FC<AudioButtonProps> = ({
         className={clsx(
           'flex items-center gap-2 transition-all duration-200',
           'hover:opacity-80 active:opacity-60',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'disabled:cursor-not-allowed disabled:opacity-50',
           sizeClasses[size],
           className
         )}
@@ -156,7 +149,7 @@ const AudioButton: React.FC<AudioButtonProps> = ({
         buttonBorderStyles,
         'flex items-center gap-2 transition-all duration-200',
         'hover:scale-105 active:scale-95',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         'text-[var(--secondary-color)]',
         'flex-1 overflow-hidden',
         sizeClasses[size],

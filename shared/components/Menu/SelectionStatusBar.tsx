@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
-import useKanjiStore from '@/features/Kanji/store/useKanjiStore';
-import useVocabStore from '@/features/Vocabulary/store/useVocabStore';
-import useKanaStore from '@/features/Kana/store/useKanaStore';
+import { useKanjiSelection } from '@/features/Kanji';
+import { useVocabSelection } from '@/features/Vocabulary';
+import { useKanaSelection } from '@/features/Kana';
 import { getSelectionLabels } from '@/shared/lib/selectionFormatting';
 import { usePathname } from 'next/navigation';
 import { removeLocaleFromPath } from '@/shared/lib/pathUtils';
@@ -25,14 +25,16 @@ const SelectionStatusBar = () => {
   const isKanji = contentType === 'kanji';
 
   // Kana store
-  const kanaGroupIndices = useKanaStore(state => state.kanaGroupIndices);
-  const addKanaGroupIndices = useKanaStore(state => state.addKanaGroupIndices);
+  const kanaSelection = useKanaSelection();
+  const kanaGroupIndices = kanaSelection.selectedGroupIndices;
 
   // Kanji store
-  const { selectedKanjiSets, clearKanjiObjs, clearKanjiSets } = useKanjiStore();
+  const kanjiSelection = useKanjiSelection();
+  const selectedKanjiSets = kanjiSelection.selectedSets;
 
   // Vocab store
-  const { selectedVocabSets, clearVocabObjs, clearVocabSets } = useVocabStore();
+  const vocabSelection = useVocabSelection();
+  const selectedVocabSets = vocabSelection.selectedSets;
 
   const { full: formattedSelectionFull, compact: formattedSelectionCompact } =
     useMemo(() => {
@@ -60,14 +62,13 @@ const SelectionStatusBar = () => {
   const handleClear = () => {
     playClick();
     if (isKana) {
-      // Clear all kana by toggling all currently selected indices
-      addKanaGroupIndices(kanaGroupIndices);
+      kanaSelection.clearSelection();
     } else if (isKanji) {
-      clearKanjiSets();
-      clearKanjiObjs();
+      kanjiSelection.clearSets();
+      kanjiSelection.clearKanji();
     } else {
-      clearVocabSets();
-      clearVocabObjs();
+      vocabSelection.clearSets();
+      vocabSelection.clearVocab();
     }
   };
 

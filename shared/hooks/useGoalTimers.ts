@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import useGoalTimersStore from '@/features/Preferences/store/useGoalTimersStore';
+import { useGoalTimersPreferences } from '@/features/Preferences';
 
 export interface GoalTimer {
   id: string;
@@ -34,8 +34,7 @@ export function useGoalTimers(
   const reachedGoalsRef = useRef<Set<string>>(new Set());
 
   // Get store actions and settings
-  const addToHistory = useGoalTimersStore(state => state.addToHistory);
-  const settings = useGoalTimersStore(state => state.settings);
+  const { addToHistory, settings } = useGoalTimersPreferences();
 
   // Add new goal
   const addGoal = useCallback(

@@ -17,10 +17,13 @@ import {
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import useOnboardingStore from '@/shared/store/useOnboardingStore';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import {
+  themeSets,
+  useAudioPreferences,
+  useThemePreferences
+} from '@/features/Preferences';
 import { useClick } from '@/shared/hooks/useAudio';
 import { buttonBorderStyles, cardBorderStyles } from '@/shared/lib/styles';
-import themeSets from '@/features/Preferences/data/themes';
 import { modalFonts } from '@/shared/components/Modals/data/modalFonts';
 
 const WelcomeModal = () => {
@@ -38,17 +41,16 @@ const WelcomeModal = () => {
   >('welcome');
   const [isVisible, setIsVisible] = useState(false);
 
-  const selectedTheme = usePreferencesStore(state => state.theme);
-  const setSelectedTheme = usePreferencesStore(state => state.setTheme);
+  const {
+    theme: selectedTheme,
+    setTheme: setSelectedTheme,
+    font: currentFont,
+    setFont,
+    displayKana,
+    setDisplayKana
+  } = useThemePreferences();
 
-  const currentFont = usePreferencesStore(state => state.font);
-  const setFont = usePreferencesStore(state => state.setFont);
-
-  const displayKana = usePreferencesStore(state => state.displayKana);
-  const setDisplayKana = usePreferencesStore(state => state.setDisplayKana);
-
-  const silentMode = usePreferencesStore(state => state.silentMode);
-  const setSilentMode = usePreferencesStore(state => state.setSilentMode);
+  const { silentMode, setSilentMode } = useAudioPreferences();
 
   const [localTheme, setLocalTheme] = useState(selectedTheme);
   const [localFont, setLocalFont] = useState(currentFont);
@@ -256,7 +258,9 @@ const WelcomeModal = () => {
                       <span className='text-[var(--main-color)]'>
                         {localDisplayKana && '● '}
                       </span>
-                      <span className='font-medium'>{t('steps.behavior.displayLanguage.kana')}</span>
+                      <span className='font-medium'>
+                        {t('steps.behavior.displayLanguage.kana')}
+                      </span>
                     </div>
                   </button>
                 </div>
@@ -288,7 +292,9 @@ const WelcomeModal = () => {
                       <span className='text-[var(--main-color)]'>
                         {!localSilentMode && '● '}
                       </span>
-                      <span className='font-medium'>{t('steps.behavior.soundEffects.on')}</span>
+                      <span className='font-medium'>
+                        {t('steps.behavior.soundEffects.on')}
+                      </span>
                       <AudioLines size={20} />
                     </div>
                   </button>
@@ -311,7 +317,9 @@ const WelcomeModal = () => {
                       <span className='text-[var(--main-color)]'>
                         {localSilentMode && '● '}
                       </span>
-                      <span className='font-medium'>{t('steps.behavior.soundEffects.off')}</span>
+                      <span className='font-medium'>
+                        {t('steps.behavior.soundEffects.off')}
+                      </span>
                       <VolumeX size={20} />
                     </div>
                   </button>
@@ -463,7 +471,8 @@ const WelcomeModal = () => {
                       <span className='text-sm font-medium text-[var(--main-color)]'>
                         {localFont === fontObj.name && '● '}
                         {fontObj.name}
-                        {fontObj.name === 'Zen Maru Gothic' && ` ${t('steps.fonts.default')}`}
+                        {fontObj.name === 'Zen Maru Gothic' &&
+                          ` ${t('steps.fonts.default')}`}
                       </span>
                     </div>
                     <div className='text-lg text-[var(--secondary-color)]'>
@@ -474,7 +483,8 @@ const WelcomeModal = () => {
               ))}
               <div className='mt-4 rounded-lg bg-[var(--background-color)] p-3 text-center'>
                 <p className='text-sm text-[var(--secondary-color)]'>
-                  {t('steps.fonts.moreInfo')} <strong>{t('steps.fonts.preferences')}</strong>
+                  {t('steps.fonts.moreInfo')}{' '}
+                  <strong>{t('steps.fonts.preferences')}</strong>
                 </p>
               </div>
             </div>
@@ -620,7 +630,9 @@ const WelcomeModal = () => {
                       size={16}
                       className='sm:h-[18px] sm:w-[18px]'
                     />
-                    <span className='hidden sm:inline'>{t('navigation.previous')}</span>
+                    <span className='hidden sm:inline'>
+                      {t('navigation.previous')}
+                    </span>
                     <span className='sm:hidden'>{t('navigation.back')}</span>
                   </button>
                 ) : (

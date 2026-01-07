@@ -72,7 +72,7 @@ const AchievementNotification = ({
           <button
             onClick={handleClose}
             className={clsx(
-              'absolute top-2 right-2 rounded p-1',
+              'absolute top-2 right-2 cursor-pointer rounded p-1',
               'text-[var(--secondary-color)] hover:text-[var(--main-color)]',
               'transition-colors duration-200 hover:bg-[var(--background-color)]'
             )}
@@ -214,7 +214,7 @@ export const AchievementNotificationContainer = () => {
             <button
               onClick={handleCloseModal}
               className={clsx(
-                'rounded-lg px-6 py-2',
+                'cursor-pointer rounded-lg px-6 py-2',
                 'bg-[var(--background-color)] text-[var(--main-color)]',
                 'transition-colors duration-200 hover:bg-[var(--border-color)]'
               )}

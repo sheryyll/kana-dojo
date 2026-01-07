@@ -10,14 +10,14 @@ const BackButton = () => {
   const { playClick } = useClick();
 
   return (
-    <Link href="/" className="w-full md:w-1/3 lg:w-1/4">
+    <Link href='/' className='w-full md:w-1/3 lg:w-1/4'>
       <button
         onClick={() => playClick()}
         className={clsx(
           buttonBorderStyles,
-          'py-4 px-16 text-[var(--main-color)] border-b-4 border-[var(--border-color)] hover:border-[var(--main-color)]/80',
+          'border-b-4 border-[var(--border-color)] px-16 py-4 text-[var(--main-color)] hover:border-[var(--main-color)]/80',
           'w-full',
-          'flex items-center justify-center'
+          'flex cursor-pointer items-center justify-center'
         )}
       >
         <ChevronsLeft />

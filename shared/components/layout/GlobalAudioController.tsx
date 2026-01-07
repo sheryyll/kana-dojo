@@ -2,11 +2,11 @@
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useChristmas } from '@/shared/hooks/useAudio';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import { useThemePreferences } from '@/features/Preferences';
 
 export default function GlobalAudioController() {
   const pathname = usePathname();
-  const selectedTheme = usePreferencesStore(state => state.theme);
+  const { theme: selectedTheme } = useThemePreferences();
   const { playChristmas, pauseChristmas, isPlaying, resetTimer } =
     useChristmas();
 

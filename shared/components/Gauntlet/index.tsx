@@ -8,7 +8,7 @@ import { useClick, useCorrect, useError } from '@/shared/hooks/useAudio';
 import { saveSession } from '@/shared/lib/gauntletStats';
 import useGauntletSettingsStore from '@/shared/store/useGauntletSettingsStore';
 
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { statsTracking } from '@/features/Progress';
 import EmptyState from './EmptyState';
 import PreGameScreen from './PreGameScreen';
 import ActiveGame from './ActiveGame';
@@ -209,8 +209,8 @@ export default function Gauntlet<T>({ config, onCancel }: GauntletProps<T>) {
   // Track challenge mode usage on mount
   useEffect(() => {
     // Track challenge mode usage for achievements (Requirements 8.1-8.3)
-    useStatsStore.getState().recordChallengeModeUsed('gauntlet');
-    useStatsStore.getState().recordDojoUsed(dojoType);
+    statsTracking.recordChallengeModeUsed('gauntlet');
+    statsTracking.recordDojoUsed(dojoType);
   }, [dojoType]);
 
   // Timer effect
@@ -352,7 +352,7 @@ export default function Gauntlet<T>({ config, onCancel }: GauntletProps<T>) {
       // Track gauntlet stats for achievements
       const livesLost = maxLives - lives + livesRegenerated;
       const isPerfect = stats.accuracy === 1 && completed;
-      useStatsStore.getState().recordGauntletRun({
+      statsTracking.recordGauntletRun({
         completed,
         difficulty,
         isPerfect,

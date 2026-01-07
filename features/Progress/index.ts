@@ -7,14 +7,19 @@ export {
   useGameStats,
   useStatsDisplay,
   useSessionStats,
-  useTimedStats
+  useTimedStats,
+  statsTracking,
+  progressBackup
 } from './facade';
 export type {
   GameStats,
   GameStatsActions,
   StatsDisplay,
   SessionStats,
-  TimedStats
+  TimedStats,
+  RecordGauntletRunParams,
+  RecordBlitzSessionParams,
+  StatsStoreState
 } from './facade';
 
 // Components (page-level)
@@ -75,6 +80,8 @@ export type {
 export { classifyCharacter } from './lib/classifyCharacter';
 export { detectContentType } from './lib/detectContentType';
 export { calculateAccuracy } from './lib/calculateAccuracy';
+
+export { default as useStatsStore } from './store/useStatsStore';
 
 // ============================================================================
 // PRIVATE - DO NOT IMPORT DIRECTLY

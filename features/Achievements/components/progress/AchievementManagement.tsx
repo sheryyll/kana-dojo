@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { RotateCcw } from 'lucide-react';
 import useAchievementStore from '@/features/Achievements/store/useAchievementStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { useClick } from '@/shared/hooks/useAudio';
 import { cardBorderStyles, buttonBorderStyles } from '@/shared/lib/styles';
 

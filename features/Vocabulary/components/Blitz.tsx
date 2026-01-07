@@ -4,7 +4,7 @@ import React from 'react';
 import useVocabStore, {
   type IVocabObj
 } from '@/features/Vocabulary/store/useVocabStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import Blitz, { type BlitzConfig } from '@/shared/components/Blitz';
 import FuriganaText from '@/shared/components/text/FuriganaText';
 import { getSelectionLabels } from '@/shared/lib/selectionFormatting';

@@ -1,8 +1,8 @@
 'use client';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import useKanjiStore from '@/features/Kanji/store/useKanjiStore';
-import useVocabStore from '@/features/Vocabulary/store/useVocabStore';
+import { useKanjiSelection } from '@/features/Kanji';
+import { useVocabSelection } from '@/features/Vocabulary';
 import { usePathname } from 'next/navigation';
 import { removeLocaleFromPath } from '@/shared/lib/pathUtils';
 import {
@@ -56,20 +56,14 @@ const UnitSelector = () => {
   const useNewUnitSelectorDesign = false;
 
   // Kanji store
-  const {
-    selectedKanjiCollection,
-    setSelectedKanjiCollection,
-    clearKanjiObjs,
-    clearKanjiSets
-  } = useKanjiStore();
+  const kanjiSelection = useKanjiSelection();
+  const selectedKanjiCollection = kanjiSelection.selectedCollection;
+  const setSelectedKanjiCollection = kanjiSelection.setCollection;
 
   // Vocab store
-  const {
-    selectedVocabCollection,
-    setSelectedVocabCollection,
-    clearVocabObjs,
-    clearVocabSets
-  } = useVocabStore();
+  const vocabSelection = useVocabSelection();
+  const selectedVocabCollection = vocabSelection.selectedCollection;
+  const setSelectedVocabCollection = vocabSelection.setCollection;
 
   // Current content type values
   const selectedCollection = isKanji
@@ -84,11 +78,11 @@ const UnitSelector = () => {
     playClick();
     setSelectedCollection(level);
     if (isKanji) {
-      clearKanjiObjs();
-      clearKanjiSets();
+      kanjiSelection.clearKanji();
+      kanjiSelection.clearSets();
     } else {
-      clearVocabObjs();
-      clearVocabSets();
+      vocabSelection.clearVocab();
+      vocabSelection.clearSets();
     }
   };
 

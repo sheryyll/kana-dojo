@@ -64,7 +64,7 @@ export function CategoryFilter({
         type='button'
         onClick={() => onCategoryChange(null)}
         className={cn(
-          'inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200',
+          'inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200',
           selectedCategory === null
             ? 'border-[var(--main-color)] bg-[var(--main-color)] text-[var(--background-color)]'
             : 'border-[var(--border-color)] bg-transparent text-[var(--secondary-color)] hover:border-[var(--main-color)] hover:text-[var(--main-color)]'
@@ -82,7 +82,7 @@ export function CategoryFilter({
           type='button'
           onClick={() => onCategoryChange(category)}
           className={cn(
-            'inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-medium capitalize transition-all duration-200',
+            'inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-sm font-medium capitalize transition-all duration-200',
             selectedCategory === category
               ? cn(
                   categoryColors[category],
