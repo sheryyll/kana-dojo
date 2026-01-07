@@ -248,6 +248,12 @@ const baseThemeSets: BaseThemeGroup[] = [
     icon: Moon,
     themes: [
       {
+        id: 'hanagasumi',
+        backgroundColor: 'oklch(21.5% 0.0420 300.0 / 1)',
+        mainColor: 'oklch(93.5% 0.2000 89.0 / 1)',
+        secondaryColor: 'oklch(90.9% 0.2300 322.0 / 1)',
+      },
+      {
         id: 'taikan',
         backgroundColor: 'oklch(21.2% 0.039 255.0 / 1)',    // cosmic graphite
         mainColor: 'oklch(93.5% 0.235 122.0 / 1)',           // radiant yellow-green
