@@ -248,6 +248,12 @@ const baseThemeSets: BaseThemeGroup[] = [
     icon: Moon,
     themes: [
       {
+        id: 'taikan',
+        backgroundColor: 'oklch(21.2% 0.039 255.0 / 1)',    // cosmic graphite
+        mainColor: 'oklch(93.5% 0.235 122.0 / 1)',           // radiant yellow-green
+        secondaryColor: 'oklch(79.5% 0.205 28.0 / 1)',       // deep coral
+      },
+      {
         id: 'yuyake',
         backgroundColor: 'oklch(25.0% 0.058 340.0 / 1)',    // dusk mauve
         mainColor: 'oklch(90.0% 0.225 55.0 / 1)',           // tangerine orange
@@ -849,9 +855,9 @@ const baseThemeSets: BaseThemeGroup[] = [
       },
       {
         id: 'morion',
-        backgroundColor: 'oklch(20.0% 0.054 255.0 / 1)',    
-        mainColor: 'oklch(92.5% 0.190 130.0 / 1)',           
-        secondaryColor: 'oklch(84.0% 0.140 85.0 / 1)',       
+        backgroundColor: 'oklch(20.0% 0.054 255.0 / 1)',
+        mainColor: 'oklch(92.5% 0.190 130.0 / 1)',
+        secondaryColor: 'oklch(84.0% 0.140 85.0 / 1)',
       }
     ]
   },
