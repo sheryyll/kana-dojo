@@ -5,7 +5,7 @@ import Pick from './Pick';
 import Input from './Input';
 import WordBuildingGame from './WordBuildingGame';
 import useKanjiStore from '@/features/Kanji/store/useKanjiStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { useShallow } from 'zustand/react/shallow';
 import Stats from '@/shared/components/Game/Stats';
 

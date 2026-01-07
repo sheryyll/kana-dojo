@@ -5,10 +5,19 @@
 # Exit 1 = Proceed with build
 
 # Get list of changed files
-if [ -n "$VERCEL_GIT_PREVIOUS_SHA" ] && [ -n "$VERCEL_GIT_COMMIT_SHA" ]; then
-  CHANGED_FILES=$(git diff "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" --name-only)
-else
-  CHANGED_FILES=$(git diff HEAD^ HEAD --name-only)
+CHANGED_FILES=""
+
+if [ -n "${VERCEL_GIT_PREVIOUS_SHA:-}" ] && [ -n "${VERCEL_GIT_COMMIT_SHA:-}" ]; then
+  CHANGED_FILES=$(git diff "${VERCEL_GIT_PREVIOUS_SHA}...${VERCEL_GIT_COMMIT_SHA}" --name-only 2>/dev/null)
+fi
+
+if [ -z "$CHANGED_FILES" ]; then
+  CHANGED_FILES=$(git diff HEAD~1 HEAD --name-only 2>/dev/null)
+fi
+
+if [ -z "$CHANGED_FILES" ]; then
+  echo "🟡 Could not determine changed files via git diff. Proceeding with build."
+  exit 1
 fi
 
 # Patterns to ignore (won't trigger a build)

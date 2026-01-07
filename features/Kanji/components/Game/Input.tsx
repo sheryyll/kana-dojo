@@ -1,6 +1,6 @@
 'use client';
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { CircleCheck, CircleX, CircleArrowRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { CircleCheck } from 'lucide-react';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import useKanjiStore, { IKanjiObj } from '@/features/Kanji/store/useKanjiStore';
@@ -8,7 +8,7 @@ import { useClick, useCorrect, useError } from '@/shared/hooks/useAudio';
 // import GameIntel from '@/shared/components/Game/GameIntel';
 import { useStopwatch } from 'react-timer-hook';
 import useStats from '@/shared/hooks/useStats';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { useShallow } from 'zustand/react/shallow';
 import Stars from '@/shared/components/Game/Stars';
 import AnswerSummary from '@/shared/components/Game/AnswerSummary';
@@ -16,7 +16,6 @@ import SSRAudioButton from '@/shared/components/audio/SSRAudioButton';
 import FuriganaText from '@/shared/components/text/FuriganaText';
 import { useCrazyModeTrigger } from '@/features/CrazyMode/hooks/useCrazyModeTrigger';
 import { getGlobalAdaptiveSelector } from '@/shared/lib/adaptiveSelection';
-import { ActionButton } from '@/shared/components/ui/ActionButton';
 import { GameBottomBar } from '@/shared/components/Game/GameBottomBar';
 
 // Get the global adaptive selector for weighted character selection
@@ -76,6 +75,8 @@ const KanjiInputGame = ({
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  // Guard to prevent Enter key repeat from immediately triggering continue after correct answer
+  const justAnsweredRef = useRef(false);
 
   const [inputValue, setInputValue] = useState('');
   const [bottomBarState, setBottomBarState] = useState<BottomBarState>('check');
@@ -109,6 +110,9 @@ const KanjiInputGame = ({
       ];
 
   const [displayAnswerSummary, setDisplayAnswerSummary] = useState(false);
+  const [feedback, setFeedback] = useState<React.ReactElement>(
+    <>{'feedback ~'}</>
+  );
 
   useEffect(() => {
     if (inputRef.current && bottomBarState === 'check') {
@@ -123,6 +127,11 @@ const KanjiInputGame = ({
       const isSpace = event.code === 'Space' || event.key === ' ';
 
       if (isEnter) {
+        // Guard against Enter key repeat immediately after correct answer
+        if (justAnsweredRef.current) {
+          event.preventDefault();
+          return;
+        }
         // Allow Enter to trigger Next button when correct
         if (bottomBarState === 'correct') {
           event.preventDefault();
@@ -143,7 +152,7 @@ const KanjiInputGame = ({
 
   useEffect(() => {
     if (isHidden) speedStopwatch.pause();
-  }, [isHidden]);
+  }, [isHidden, speedStopwatch]);
 
   if (!selectedKanjiObjs || selectedKanjiObjs.length === 0) {
     return null;
@@ -203,6 +212,22 @@ const KanjiInputGame = ({
     resetWrongStreak();
     setBottomBarState('correct');
     setDisplayAnswerSummary(true);
+
+    // Set guard to prevent Enter key repeat from immediately triggering continue
+    justAnsweredRef.current = true;
+    setTimeout(() => {
+      justAnsweredRef.current = false;
+    }, 300);
+
+    // Set feedback for the answer summary
+    const displayText = isReverse ? correctKanjiObj?.meanings[0] : correctChar;
+    const answerText = isReverse ? correctKanjiObj?.kanjiChar : userInput;
+    setFeedback(
+      <>
+        <span className='text-[var(--secondary-color)]'>{`${displayText} = ${answerText} `}</span>
+        <CircleCheck className='inline text-[var(--main-color)]' />
+      </>
+    );
   };
 
   const handleWrongAnswer = () => {
@@ -235,7 +260,7 @@ const KanjiInputGame = ({
     setCorrectChar(newChar);
   };
 
-  const handleContinue = useCallback(() => {
+  const handleContinue = () => {
     playClick();
     setInputValue('');
     setDisplayAnswerSummary(false);
@@ -243,7 +268,7 @@ const KanjiInputGame = ({
     setBottomBarState('check');
     speedStopwatch.reset();
     speedStopwatch.start();
-  }, [playClick]);
+  };
 
   const gameMode = isReverse ? 'reverse input' : 'input';
   const displayCharLang = isReverse ? 'en' : 'ja';
@@ -275,7 +300,7 @@ const KanjiInputGame = ({
         <AnswerSummary
           payload={currentKanjiObj}
           setDisplayAnswerSummary={setDisplayAnswerSummary}
-          feedback={<></>}
+          feedback={feedback}
           isEmbedded={true}
         />
       ) : (
@@ -316,7 +341,7 @@ const KanjiInputGame = ({
           </div>
 
           <textarea
-            ref={inputRef as any}
+            ref={inputRef}
             value={inputValue}
             placeholder='Type your answer...'
             disabled={showContinue}
@@ -335,7 +360,7 @@ const KanjiInputGame = ({
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 e.preventDefault();
-                handleEnter(e as any);
+                handleEnter(e);
               }
             }}
             lang={inputLang}

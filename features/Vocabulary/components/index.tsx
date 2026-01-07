@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 import useVocabStore from '@/features/Vocabulary/store/useVocabStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import VocabSetDictionary from '@/features/Vocabulary/components/SetDictionary';
 import {
   vocabDataService,
@@ -82,7 +82,7 @@ const VocabCards = () => {
       masteryByKey={allTimeStats.characterMastery}
       getMasteryKey={item => item.word}
       renderSetDictionary={items => <VocabSetDictionary words={items} />}
-      loadingText="Loading vocabulary sets..."
+      loadingText='Loading vocabulary sets...'
       tipText={
         <>
           💡 <strong>Tip:</strong> Complete some practice sessions to unlock the

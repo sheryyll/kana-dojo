@@ -1,8 +1,7 @@
 // Helpers to export/import user preferences and stats (client-side only)
 
-import { useCustomThemeStore } from '@/features/Preferences/store/useCustomThemeStore';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { preferencesBackup } from '@/features/Preferences';
+import { progressBackup } from '@/features/Progress';
 
 // JSON-safe type
 export type JSONValue =
@@ -72,9 +71,9 @@ function getAppVersion(): string {
 }
 
 export function createBackup(): BackupFile {
-  const themeState = usePreferencesStore.getState();
-  const customThemeState = useCustomThemeStore.getState();
-  const statsState = useStatsStore.getState();
+  const themeState = preferencesBackup.getPreferencesState();
+  const customThemeState = preferencesBackup.getCustomThemeState();
+  const statsState = progressBackup.getStatsState();
 
   return {
     version: getAppVersion(),
@@ -88,19 +87,19 @@ export function createBackup(): BackupFile {
 export function applyBackup(data: BackupFile): boolean {
   try {
     if (data.theme) {
-      const current = usePreferencesStore.getState();
+      const current = preferencesBackup.getPreferencesState();
       const picked = filterToKnownKeys(current, data.theme);
-      usePreferencesStore.setState(picked);
+      preferencesBackup.setPreferencesState(picked);
     }
     if (data.customTheme) {
-      const current = useCustomThemeStore.getState();
+      const current = preferencesBackup.getCustomThemeState();
       const picked = filterToKnownKeys(current, data.customTheme);
-      useCustomThemeStore.setState(picked);
+      preferencesBackup.setCustomThemeState(picked);
     }
     if (data.stats) {
-      const current = useStatsStore.getState();
+      const current = progressBackup.getStatsState();
       const picked = filterToKnownKeys(current, data.stats);
-      useStatsStore.setState(picked);
+      progressBackup.setStatsState(picked);
     }
     return true;
   } catch (err) {

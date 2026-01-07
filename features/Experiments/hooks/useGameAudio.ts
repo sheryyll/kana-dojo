@@ -4,6 +4,12 @@ import { useCallback, useRef, useEffect } from 'react';
 
 type SoundType = 'JUMP' | 'DOUBLE_JUMP' | 'SCORE' | 'GAME_OVER' | 'TICK';
 
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
+
 export const useGameAudio = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
 
@@ -12,7 +18,7 @@ export const useGameAudio = () => {
     const initAudio = () => {
       if (!audioContextRef.current) {
         audioContextRef.current = new (
-          window.AudioContext || (window as any).webkitAudioContext
+          window.AudioContext || window.webkitAudioContext
         )();
       }
     };

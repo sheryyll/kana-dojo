@@ -9,15 +9,17 @@ import {
 import { Coffee, Palette, GitBranch, Type, LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { useClick } from '@/shared/hooks/useAudio';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
-import useCrazyModeStore from '@/features/CrazyMode/store/useCrazyModeStore';
+import {
+  useThemePreferences,
+  ThemesModal,
+  FontsModal
+} from '@/features/Preferences';
+import { useCrazyMode } from '@/features/CrazyMode';
 import useDecorationsStore from '@/shared/store/useDecorationsStore';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import PatchNotesModal from '@/features/PatchNotes/components/PatchNotesModal';
 
 import { APP_VERSION_DISPLAY } from '@/shared/lib/constants';
-import ThemesModal from '@/features/Preferences/components/ThemesModal';
-import FontsModal from '@/features/Preferences/components/FontsModal';
 
 type SocialLink = {
   icon: IconDefinition | LucideIcon;
@@ -52,10 +54,8 @@ const socialLinks: SocialLink[] = [
 
 const MobileBottomBar = () => {
   const { playClick } = useClick();
-  const theme = usePreferencesStore(state => state.theme);
-  const font = usePreferencesStore(state => state.font);
-  const isCrazyMode = useCrazyModeStore(state => state.isCrazyMode);
-  const activeThemeId = useCrazyModeStore(state => state.activeThemeId);
+  const { theme, font } = useThemePreferences();
+  const { isCrazyMode, activeThemeId } = useCrazyMode();
   const expandDecorations = useDecorationsStore(
     state => state.expandDecorations
   );

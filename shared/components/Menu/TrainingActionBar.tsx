@@ -1,19 +1,16 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import useKanaStore from '@/features/Kana/store/useKanaStore';
-import useKanjiStore from '@/features/Kanji/store/useKanjiStore';
-import useVocabStore from '@/features/Vocabulary/store/useVocabStore';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import { KanaGauntlet, useKanaSelection } from '@/features/Kana';
+import { KanjiGauntlet, useKanjiSelection } from '@/features/Kanji';
+import { useVocabSelection, VocabGauntlet } from '@/features/Vocabulary';
+import { useInputPreferences } from '@/features/Preferences';
 import { useClick } from '@/shared/hooks/useAudio';
 import { Play, Zap, Swords } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import GameModes from '@/shared/components/Menu/GameModes';
 
 // Gauntlet components with onCancel prop support
-import GauntletKana from '@/features/Kana/components/Gauntlet';
-import GauntletKanji from '@/features/Kanji/components/Gauntlet';
-import GauntletVocab from '@/features/Vocabulary/components/Gauntlet';
 import { cn } from '@/shared/lib/utils';
 
 interface ITopBarProps {
@@ -23,7 +20,7 @@ interface ITopBarProps {
 const TrainingActionBar: React.FC<ITopBarProps> = ({
   currentDojo
 }: ITopBarProps) => {
-  const hotkeysOn = usePreferencesStore(state => state.hotkeysOn);
+  const { hotkeysOn } = useInputPreferences();
 
   const { playClick } = useClick();
 
@@ -35,13 +32,13 @@ const TrainingActionBar: React.FC<ITopBarProps> = ({
   const [showGauntletModal, setShowGauntletModal] = useState(false);
 
   // Kana store
-  const kanaGroupIndices = useKanaStore(state => state.kanaGroupIndices);
+  const { selectedGroupIndices: kanaGroupIndices } = useKanaSelection();
 
   // Kanji store
-  const selectedKanjiObjs = useKanjiStore(state => state.selectedKanjiObjs);
+  const { selectedKanji: selectedKanjiObjs } = useKanjiSelection();
 
   // Vocab store
-  const selectedWordObjs = useVocabStore(state => state.selectedVocabObjs);
+  const { selectedVocab: selectedWordObjs } = useVocabSelection();
 
   const isFilled =
     currentDojo === 'kana'
@@ -294,13 +291,13 @@ const TrainingActionBar: React.FC<ITopBarProps> = ({
       {showGauntletModal && (
         <div className='fixed inset-0 z-[80] bg-[var(--background-color)]'>
           {currentDojo === 'kana' && (
-            <GauntletKana onCancel={() => setShowGauntletModal(false)} />
+            <KanaGauntlet onCancel={() => setShowGauntletModal(false)} />
           )}
           {currentDojo === 'kanji' && (
-            <GauntletKanji onCancel={() => setShowGauntletModal(false)} />
+            <KanjiGauntlet onCancel={() => setShowGauntletModal(false)} />
           )}
           {currentDojo === 'vocabulary' && (
-            <GauntletVocab onCancel={() => setShowGauntletModal(false)} />
+            <VocabGauntlet onCancel={() => setShowGauntletModal(false)} />
           )}
         </div>
       )}

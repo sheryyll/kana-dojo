@@ -7,7 +7,7 @@ import { useGoalTimers } from '@/shared/hooks/useGoalTimers';
 import { useClick, useCorrect, useError } from '@/shared/hooks/useAudio';
 import confetti from 'canvas-confetti';
 import { useRouter } from '@/core/i18n/routing';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { statsTracking } from '@/features/Progress';
 
 import EmptyState from './EmptyState';
 import PreGameScreen from './PreGameScreen';
@@ -200,7 +200,7 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
       setIsFinished(true);
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       // Track blitz stats for achievements
-      useStatsStore.getState().recordBlitzSession({
+      statsTracking.recordBlitzSession({
         score: stats.correct,
         streak: stats.bestStreak,
         correctAnswers: stats.correct
@@ -211,8 +211,8 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
   // Track challenge mode usage on mount
   useEffect(() => {
     // Track challenge mode usage for achievements (Requirements 8.1-8.3)
-    useStatsStore.getState().recordChallengeModeUsed('blitz');
-    useStatsStore.getState().recordDojoUsed(dojoType);
+    statsTracking.recordChallengeModeUsed('blitz');
+    statsTracking.recordDojoUsed(dojoType);
   }, [dojoType]);
 
   // Focus input for Type mode

@@ -1,6 +1,6 @@
 'use client';
 import { ReactNode, memo } from 'react';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import { useThemePreferences } from '@/features/Preferences';
 
 interface FuriganaTextProps {
   text: string;
@@ -24,7 +24,7 @@ const FuriganaText = ({
   lang = 'ja',
   children
 }: FuriganaTextProps) => {
-  const furiganaEnabled = usePreferencesStore(state => state.furiganaEnabled);
+  const { furiganaEnabled } = useThemePreferences();
 
   // If children are provided, render them with optional furigana
   if (children) {
