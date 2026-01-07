@@ -48,6 +48,9 @@ export function createAdaptiveSelector(storageKey?: string) {
   let loadPromise: Promise<void> | null = null;
   const persistKey = storageKey ? `${STORAGE_KEY}-${storageKey}` : STORAGE_KEY;
 
+  // Track the last selected character to prevent repeating the same exercise
+  let lastSelectedCharacter: string | null = null;
+
   // Debounced save to avoid excessive writes
   let saveTimeout: ReturnType<typeof setTimeout> | null = null;
   const SAVE_DEBOUNCE_MS = 2000; // Save at most every 2 seconds
@@ -191,21 +194,42 @@ export function createAdaptiveSelector(storageKey?: string) {
   /**
    * Select a character using weighted random selection.
    * Characters the user struggles with have higher probability of being selected.
+   * Automatically excludes the previously selected character to prevent the same
+   * exercise from appearing twice in a row.
    *
    * @param chars - Array of available characters to select from
-   * @param excludeChar - Optional character to exclude (e.g., current character)
+   * @param excludeChar - Optional additional character to exclude (e.g., current character)
    * @returns The selected character
    */
   const selectWeightedCharacter = (
     chars: string[],
     excludeChar?: string
   ): string => {
-    const availableChars = excludeChar
-      ? chars.filter(c => c !== excludeChar)
-      : chars;
+    // Exclude both the explicit excludeChar and the last selected character
+    // to prevent the same exercise from appearing twice in a row
+    let availableChars = chars;
 
-    if (availableChars.length === 0) return chars[0];
-    if (availableChars.length === 1) return availableChars[0];
+    if (excludeChar) {
+      availableChars = availableChars.filter(c => c !== excludeChar);
+    }
+
+    // Only exclude last selected if we have more than 1 option remaining
+    if (lastSelectedCharacter && availableChars.length > 1) {
+      availableChars = availableChars.filter(c => c !== lastSelectedCharacter);
+    }
+
+    if (availableChars.length === 0) {
+      // Fallback: if all filtered out, use original chars
+      const selected = chars[0];
+      lastSelectedCharacter = selected;
+      return selected;
+    }
+
+    if (availableChars.length === 1) {
+      const selected = availableChars[0];
+      lastSelectedCharacter = selected;
+      return selected;
+    }
 
     // Calculate weights for all available characters
     const weights = availableChars.map(char => ({
@@ -221,12 +245,16 @@ export function createAdaptiveSelector(storageKey?: string) {
     for (const { char, weight } of weights) {
       randomValue -= weight;
       if (randomValue <= 0) {
+        lastSelectedCharacter = char;
         return char;
       }
     }
 
     // Fallback (shouldn't happen)
-    return availableChars[random.integer(0, availableChars.length - 1)];
+    const fallback =
+      availableChars[random.integer(0, availableChars.length - 1)];
+    lastSelectedCharacter = fallback;
+    return fallback;
   };
 
   /**

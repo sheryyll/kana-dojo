@@ -1,18 +1,15 @@
 'use client';
-import clsx from 'clsx';
 import TrainingActionBar from '@/shared/components/Menu/TrainingActionBar';
 import Info from '@/shared/components/Menu/Info';
-import KanaCards from '@/features/Kana/components/KanaCards';
+import { KanaCards, useKanaContent, useKanaSelection } from '@/features/Kana';
 import UnitSelector from '@/shared/components/Menu/UnitSelector';
-import KanjiCards from '@/features/Kanji/components';
+import { KanjiCards } from '@/features/Kanji';
 import { usePathname } from 'next/navigation';
-import VocabCards from '@/features/Vocabulary/components';
+import { VocabCards } from '@/features/Vocabulary';
 import { removeLocaleFromPath } from '@/shared/lib/pathUtils';
 import SelectionStatusBar from '@/shared/components/Menu/SelectionStatusBar';
 import { ActionButton } from '@/shared/components/ui/ActionButton';
 import { MousePointer } from 'lucide-react';
-import { kana } from '@/features/Kana/data/kana';
-import useKanaStore from '@/features/Kana/store/useKanaStore';
 import { useClick } from '@/shared/hooks/useAudio';
 import SidebarLayout from '@/shared/components/layout/SidebarLayout';
 import { cn } from '@/shared/lib/utils';
@@ -21,7 +18,8 @@ const DojoMenu = () => {
   const { playClick } = useClick();
   const pathname = usePathname();
   const pathWithoutLocale = removeLocaleFromPath(pathname);
-  const addKanaGroupIndices = useKanaStore(state => state.addKanaGroupIndices);
+  const { addGroups: addKanaGroupIndices } = useKanaSelection();
+  const { allGroups: kana } = useKanaContent();
 
   return (
     <SidebarLayout>

@@ -18,7 +18,12 @@ export function getKanjiChars(): string[] {
   const allKanji: string[] = [];
 
   for (const level of levels) {
-    const kanjiPath = join(process.cwd(), 'public', 'kanji', `${level}.json`);
+    const kanjiPath = join(
+      process.cwd(),
+      'public',
+      'data-kanji',
+      `${level}.json`
+    );
     const kanjiData = readFileSync(kanjiPath, 'utf-8');
     const entries = JSON.parse(kanjiData) as RawKanjiEntry[];
     allKanji.push(...entries.map(entry => entry.kanjiChar));

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import useKanaStore from '@/features/Kana/store/useKanaStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { generateKanaQuestion } from '@/features/Kana/lib/generateKanaQuestions';
 import type { KanaCharacter } from '@/features/Kana/lib/generateKanaQuestions';
 import { flattenKanaGroups } from '@/features/Kana/lib/flattenKanaGroup';

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import useAchievementStore, {
   ACHIEVEMENTS
 } from '@/features/Achievements/store/useAchievementStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { useClick } from '@/shared/hooks/useAudio';
 import { CategoryId } from './constants';
 

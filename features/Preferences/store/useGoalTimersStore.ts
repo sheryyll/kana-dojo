@@ -37,7 +37,7 @@ export interface GoalTimersSettings {
 /**
  * Goal Timers Store State
  */
-interface GoalTimersStore {
+export interface GoalTimersStore {
   // Templates
   templates: GoalTemplate[];
 

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 import useKanjiStore from '@/features/Kanji/store/useKanjiStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import KanjiSetDictionary from '@/features/Kanji/components/SetDictionary';
 
 import type { IKanjiObj } from '@/features/Kanji/store/useKanjiStore';
@@ -74,7 +74,7 @@ const KanjiCards = () => {
       masteryByKey={allTimeStats.characterMastery}
       getMasteryKey={item => item.kanjiChar}
       renderSetDictionary={items => <KanjiSetDictionary words={items} />}
-      loadingText="Loading kanji sets..."
+      loadingText='Loading kanji sets...'
       tipText={
         <>
           💡 <strong>Tip:</strong> Complete some practice sessions to unlock the

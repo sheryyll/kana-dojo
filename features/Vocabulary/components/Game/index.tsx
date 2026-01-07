@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 import Return from '@/shared/components/Game/ReturnFromGame';
 import Pick from './Pick';
 import Input from './Input';
+import WordBuildingGame from './WordBuildingGame';
 
 import useVocabStore from '@/features/Vocabulary/store/useVocabStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { useShallow } from 'zustand/react/shallow';
 import Stats from '@/shared/components/Game/Stats';
 
@@ -35,7 +36,10 @@ const Game = () => {
       {showStats && <Stats />}
       <Return isHidden={showStats} href='/vocabulary' gameMode={gameMode} />
       {gameMode.toLowerCase() === 'pick' ? (
-        <Pick selectedWordObjs={selectedVocabObjs} isHidden={showStats} />
+        <WordBuildingGame
+          selectedWordObjs={selectedVocabObjs}
+          isHidden={showStats}
+        />
       ) : gameMode.toLowerCase() === 'type' ? (
         <Input selectedWordObjs={selectedVocabObjs} isHidden={showStats} />
       ) : gameMode.toLowerCase() === 'anti-type' ? (

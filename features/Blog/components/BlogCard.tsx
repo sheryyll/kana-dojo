@@ -47,7 +47,7 @@ export function BlogCard({ post, className }: BlogCardProps) {
     >
       <Link
         href={`/academy/${post.slug}`}
-        className='absolute inset-0 z-10'
+        className='absolute inset-0 z-10 cursor-pointer'
         aria-label={`Read more about ${post.title}`}
       >
         <span className='sr-only'>Read article: {post.title}</span>
@@ -66,7 +66,7 @@ export function BlogCard({ post, className }: BlogCardProps) {
         </span>
         {post.difficulty && (
           <span
-            className='inline-flex items-center rounded-full border border-[var(--border-color)] bg-[var(--background-color)] px-2.5 py-0.5 text-xs font-medium capitalize text-[var(--secondary-color)]'
+            className='inline-flex items-center rounded-full border border-[var(--border-color)] bg-[var(--background-color)] px-2.5 py-0.5 text-xs font-medium text-[var(--secondary-color)] capitalize'
             data-testid='blog-card-difficulty'
           >
             {post.difficulty}

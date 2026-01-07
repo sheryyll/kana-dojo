@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Plus, X, Target, Clock, CheckCircle2, Save } from 'lucide-react';
 import clsx from 'clsx';
 import type { GoalTimer } from '@/shared/hooks/useGoalTimers';
-import useGoalTimersStore from '@/features/Preferences/store/useGoalTimersStore';
+import { useGoalTimersPreferences } from '@/features/Preferences';
 
 interface GoalTimersPanelProps {
   goals: GoalTimer[];
@@ -24,7 +24,7 @@ export default function GoalTimersPanel({
   disabled = false
 }: GoalTimersPanelProps) {
   // Get templates from store
-  const { templates, addTemplate, settings } = useGoalTimersStore();
+  const { templates, addTemplate, settings } = useGoalTimersPreferences();
 
   // Component state for adding goals
   const [isAdding, setIsAdding] = useState(false);
@@ -105,13 +105,13 @@ export default function GoalTimersPanel({
   return (
     <div
       className={clsx(
-        'border-2 rounded-2xl p-4',
-        'bg-[var(--card-color)] border-[var(--border-color)]'
+        'rounded-2xl border-2 p-4',
+        'border-[var(--border-color)] bg-[var(--card-color)]'
       )}
     >
-      <div className='flex items-center justify-between mb-4'>
+      <div className='mb-4 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-          <Target className='w-5 h-5 text-[var(--main-color)]' />
+          <Target className='h-5 w-5 text-[var(--main-color)]' />
           <h3 className='font-semibold text-[var(--main-color)]'>
             Goal Timers
           </h3>
@@ -123,7 +123,7 @@ export default function GoalTimersPanel({
             className={clsx(
               'text-xs transition-colors',
               'text-[var(--secondary-color)] hover:text-[var(--main-color)]',
-              disabled && 'opacity-50 cursor-not-allowed'
+              disabled && 'cursor-not-allowed opacity-50'
             )}
           >
             Clear All
@@ -132,9 +132,9 @@ export default function GoalTimersPanel({
       </div>
 
       {/* Goals List */}
-      <div className='space-y-2 mb-4'>
+      <div className='mb-4 space-y-2'>
         {goals.length === 0 && !isAdding && (
-          <p className='text-sm text-[var(--secondary-color)] text-center py-4'>
+          <p className='py-4 text-center text-sm text-[var(--secondary-color)]'>
             No goals set. Add one to get started!
           </p>
         )}
@@ -150,18 +150,18 @@ export default function GoalTimersPanel({
             <div
               key={goal.id}
               className={clsx(
-                'p-3 rounded-xl border-2 transition-all',
+                'rounded-xl border-2 p-3 transition-all',
                 isReached
                   ? 'border-green-500 bg-green-500/10'
                   : 'border-[var(--border-color)] bg-[var(--card-color)]'
               )}
             >
-              <div className='flex items-center justify-between mb-2'>
+              <div className='mb-2 flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
                   {isReached ? (
-                    <CheckCircle2 className='w-4 h-4 text-green-500' />
+                    <CheckCircle2 className='h-4 w-4 text-green-500' />
                   ) : (
-                    <Clock className='w-4 h-4 text-[var(--main-color)]' />
+                    <Clock className='h-4 w-4 text-[var(--main-color)]' />
                   )}
                   <span
                     className={clsx(
@@ -182,19 +182,19 @@ export default function GoalTimersPanel({
                     className={clsx(
                       'transition-colors',
                       'text-[var(--secondary-color)] hover:text-red-500',
-                      disabled && 'opacity-50 cursor-not-allowed'
+                      disabled && 'cursor-not-allowed opacity-50'
                     )}
                   >
-                    <X className='w-4 h-4' />
+                    <X className='h-4 w-4' />
                   </button>
                 </div>
               </div>
 
               {/* Progress Bar */}
               {!isReached && (
-                <div className='w-full bg-[var(--border-color)] rounded-full h-1.5'>
+                <div className='h-1.5 w-full rounded-full bg-[var(--border-color)]'>
                   <div
-                    className='bg-[var(--main-color)] h-1.5 rounded-full transition-all duration-300'
+                    className='h-1.5 rounded-full bg-[var(--main-color)] transition-all duration-300'
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -208,7 +208,7 @@ export default function GoalTimersPanel({
       {isAdding ? (
         <div
           className={clsx(
-            'space-y-3 p-3 border-2 rounded-xl',
+            'space-y-3 rounded-xl border-2 p-3',
             'border-[var(--border-color)] bg-[var(--card-color)]'
           )}
         >
@@ -218,8 +218,8 @@ export default function GoalTimersPanel({
             value={newGoalLabel}
             onChange={e => setNewGoalLabel(e.target.value)}
             className={clsx(
-              'w-full px-3 py-2 rounded-lg border-2',
-              'bg-[var(--card-color)] border-[var(--border-color)]',
+              'w-full rounded-lg border-2 px-3 py-2',
+              'border-[var(--border-color)] bg-[var(--card-color)]',
               'text-[var(--main-color)] placeholder:text-[var(--secondary-color)]'
             )}
             autoFocus
@@ -227,7 +227,7 @@ export default function GoalTimersPanel({
 
           <div className='flex gap-2'>
             <div className='flex-1'>
-              <label className='text-xs text-[var(--secondary-color)] mb-1 block'>
+              <label className='mb-1 block text-xs text-[var(--secondary-color)]'>
                 Minutes
               </label>
               <input
@@ -237,14 +237,14 @@ export default function GoalTimersPanel({
                 value={newGoalMinutes}
                 onChange={e => setNewGoalMinutes(parseInt(e.target.value) || 0)}
                 className={clsx(
-                  'w-full px-3 py-2 rounded-lg border-2',
-                  'bg-[var(--card-color)] border-[var(--border-color)]',
+                  'w-full rounded-lg border-2 px-3 py-2',
+                  'border-[var(--border-color)] bg-[var(--card-color)]',
                   'text-[var(--main-color)]'
                 )}
               />
             </div>
             <div className='flex-1'>
-              <label className='text-xs text-[var(--secondary-color)] mb-1 block'>
+              <label className='mb-1 block text-xs text-[var(--secondary-color)]'>
                 Seconds
               </label>
               <input
@@ -254,8 +254,8 @@ export default function GoalTimersPanel({
                 value={newGoalSeconds}
                 onChange={e => setNewGoalSeconds(parseInt(e.target.value) || 0)}
                 className={clsx(
-                  'w-full px-3 py-2 rounded-lg border-2',
-                  'bg-[var(--card-color)] border-[var(--border-color)]',
+                  'w-full rounded-lg border-2 px-3 py-2',
+                  'border-[var(--border-color)] bg-[var(--card-color)]',
                   'text-[var(--main-color)]'
                 )}
               />
@@ -266,7 +266,7 @@ export default function GoalTimersPanel({
             <button
               onClick={handleAddGoal}
               className={clsx(
-                'flex-1 px-4 py-2 rounded-lg transition-opacity',
+                'flex-1 rounded-lg px-4 py-2 transition-opacity',
                 'bg-[var(--main-color)] text-[var(--bg-color)]',
                 'hover:opacity-90'
               )}
@@ -276,20 +276,20 @@ export default function GoalTimersPanel({
             <button
               onClick={handleSaveAsTemplate}
               className={clsx(
-                'px-4 py-2 border-2 rounded-lg transition-colors',
+                'rounded-lg border-2 px-4 py-2 transition-colors',
                 'border-[var(--border-color)]',
                 'hover:bg-[var(--border-color)]',
                 'flex items-center gap-2'
               )}
               title='Save as template and add goal'
             >
-              <Save className='w-4 h-4' />
+              <Save className='h-4 w-4' />
               Save
             </button>
             <button
               onClick={() => setIsAdding(false)}
               className={clsx(
-                'px-4 py-2 border-2 rounded-lg transition-colors',
+                'rounded-lg border-2 px-4 py-2 transition-colors',
                 'border-[var(--border-color)]',
                 'hover:bg-[var(--border-color)]'
               )}
@@ -303,7 +303,7 @@ export default function GoalTimersPanel({
           {/* Quick Add from Default Templates */}
           {goals.length === 0 && defaultTemplates.length > 0 && (
             <div className='mb-3'>
-              <p className='text-xs text-[var(--secondary-color)] mb-2'>
+              <p className='mb-2 text-xs text-[var(--secondary-color)]'>
                 Quick add:
               </p>
               <div className='flex flex-wrap gap-2'>
@@ -313,15 +313,15 @@ export default function GoalTimersPanel({
                     onClick={() => handleAddFromTemplate(template.id)}
                     disabled={disabled}
                     className={clsx(
-                      'px-3 py-2 text-sm border-2 rounded-lg transition-colors',
+                      'rounded-lg border-2 px-3 py-2 text-sm transition-colors',
                       'border-[var(--border-color)]',
                       'hover:bg-[var(--border-color)]',
-                      disabled && 'opacity-50 cursor-not-allowed'
+                      disabled && 'cursor-not-allowed opacity-50'
                     )}
                   >
                     <span className='mr-1'>{template.icon}</span>
                     {template.label}
-                    <span className='text-xs text-[var(--secondary-color)] ml-1'>
+                    <span className='ml-1 text-xs text-[var(--secondary-color)]'>
                       ({Math.floor(template.targetSeconds / 60)}m)
                     </span>
                   </button>
@@ -333,7 +333,7 @@ export default function GoalTimersPanel({
           {/* Custom Templates */}
           {customTemplates.length > 0 && (
             <div className='mb-3'>
-              <p className='text-xs text-[var(--secondary-color)] mb-2'>
+              <p className='mb-2 text-xs text-[var(--secondary-color)]'>
                 Your templates:
               </p>
               <div className='flex flex-wrap gap-2'>
@@ -343,15 +343,15 @@ export default function GoalTimersPanel({
                     onClick={() => handleAddFromTemplate(template.id)}
                     disabled={disabled}
                     className={clsx(
-                      'px-3 py-2 text-sm border-2 rounded-lg transition-colors',
+                      'rounded-lg border-2 px-3 py-2 text-sm transition-colors',
                       'border-[var(--border-color)]',
                       'hover:bg-[var(--border-color)]',
-                      disabled && 'opacity-50 cursor-not-allowed'
+                      disabled && 'cursor-not-allowed opacity-50'
                     )}
                   >
                     <span className='mr-1'>{template.icon}</span>
                     {template.label}
-                    <span className='text-xs text-[var(--secondary-color)] ml-1'>
+                    <span className='ml-1 text-xs text-[var(--secondary-color)]'>
                       ({Math.floor(template.targetSeconds / 60)}m)
                     </span>
                   </button>
@@ -364,14 +364,14 @@ export default function GoalTimersPanel({
             onClick={() => setIsAdding(true)}
             disabled={disabled}
             className={clsx(
-              'w-full px-4 py-2 border-2 border-dashed rounded-lg transition-colors',
+              'w-full rounded-lg border-2 border-dashed px-4 py-2 transition-colors',
               'border-[var(--border-color)]',
               'hover:bg-[var(--border-color)]',
               'flex items-center justify-center gap-2',
-              disabled && 'opacity-50 cursor-not-allowed'
+              disabled && 'cursor-not-allowed opacity-50'
             )}
           >
-            <Plus className='w-4 h-4' />
+            <Plus className='h-4 w-4' />
             <span>Add Goal Timer</span>
           </button>
         </>

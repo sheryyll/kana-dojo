@@ -1,13 +1,6 @@
 'use client';
-import {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-  memo
-} from 'react';
-import themeSets from '@/features/Preferences/data/themes';
+import { useEffect, useState, useMemo, useCallback, useRef, memo } from 'react';
+import { themeSets } from '@/features/Preferences';
 import { useClick } from '@/shared/hooks/useAudio';
 import clsx from 'clsx';
 
@@ -62,7 +55,6 @@ const GRID_CONFIG = {
   desktop: { cols: 28, cellSize: 36, gap: 2 }, // grid-cols-28, text-4xl ~ 36px
   mobile: { cols: 10, cellSize: 36, gap: 2 } // grid-cols-10
 };
-
 
 // Calculate how many characters to render based on viewport
 const calculateVisibleCount = (interactive: boolean): number => {
@@ -131,7 +123,7 @@ const loadDecorations = async (): Promise<string[]> => {
   if (decorationsCache) return decorationsCache;
   if (decorationsLoadingPromise) return decorationsLoadingPromise;
 
-  decorationsLoadingPromise = fetch('/kanji/decorations.json')
+  decorationsLoadingPromise = fetch('/data-kanji/decorations.json')
     .then(res => res.json())
     .then((chars: string[]) => {
       decorationsCache = shuffle(chars);

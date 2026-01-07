@@ -1,13 +1,140 @@
 import clsx from 'clsx';
 import { toKana, toRomaji } from 'wanakana';
-import { IKanjiObj } from '@/features/Kanji/store/useKanjiStore';
-import { IVocabObj } from '@/features/Vocabulary/store/useVocabStore';
+import type { IKanjiObj } from '@/features/Kanji';
+import type { IVocabObj } from '@/features/Vocabulary';
 import { CircleArrowRight } from 'lucide-react';
 import { Dispatch, SetStateAction, useRef, useEffect } from 'react';
 import { useClick } from '@/shared/hooks/useAudio';
 import FuriganaText from '@/shared/components/text/FuriganaText';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import { useThemePreferences } from '@/features/Preferences';
 import { ActionButton } from '@/shared/components/ui/ActionButton';
+import { motion } from 'framer-motion';
+
+// Premium spring animation config
+const springConfig = {
+  type: 'spring' as const,
+  stiffness: 400,
+  damping: 30,
+  mass: 0.8
+};
+
+// Duolingo-like slide animation - slides in from right, fades in
+const slideInVariants = {
+  hidden: {
+    opacity: 0,
+    x: 100
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 500,
+      damping: 35,
+      mass: 0.5,
+      staggerChildren: 0.08,
+      delayChildren: 0.02
+    }
+  },
+  exit: {
+    opacity: 0,
+    x: -100,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 600,
+      damping: 40,
+      mass: 0.4
+    }
+  }
+};
+
+// Container variants for staggered children animations
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1
+    }
+  }
+};
+
+// Smooth fade + slide up animation for content items
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+    scale: 0.95
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: springConfig
+  }
+};
+
+// Special animation for the main character display (kanji/word)
+const mainCharVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+    y: 30,
+    rotateX: -15
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    rotateX: 0,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 350,
+      damping: 25,
+      mass: 0.9
+    }
+  }
+};
+
+// Subtle pulse animation for readings
+const readingVariants = {
+  hidden: {
+    opacity: 0,
+    x: -15,
+    scale: 0.9
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 300,
+      damping: 25
+    }
+  }
+};
+
+// Elegant slide-in for meanings text
+const meaningVariants = {
+  hidden: {
+    opacity: 0,
+    y: 15,
+    filter: 'blur(4px)'
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring' as const,
+      stiffness: 250,
+      damping: 25,
+      delay: 0.3
+    }
+  }
+};
 
 // Type guard
 const isKanjiObj = (obj: IKanjiObj | IVocabObj): obj is IKanjiObj => {
@@ -16,9 +143,12 @@ const isKanjiObj = (obj: IKanjiObj | IVocabObj): obj is IKanjiObj => {
 
 // Sub-components
 const FeedbackHeader = ({ feedback }: { feedback: React.ReactElement }) => (
-  <p className='flex w-full items-center justify-center gap-1.5 border-t-1 border-b-1 border-[var(--border-color)] px-4 py-3 text-xl'>
+  <motion.p
+    variants={itemVariants}
+    className='flex w-full items-center justify-center gap-1.5 border-t-1 border-b-1 border-[var(--border-color)] px-4 py-3 text-xl'
+  >
     {feedback}
-  </p>
+  </motion.p>
 );
 
 const ContinueButton = ({
@@ -31,7 +161,15 @@ const ContinueButton = ({
   disabled: boolean;
 }) => {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        type: 'spring',
+        stiffness: 300,
+        damping: 25,
+        delay: 0.4
+      }}
       className={clsx(
         'w-[100vw]',
         'border-t-2 border-[var(--border-color)] bg-[var(--card-color)]',
@@ -50,19 +188,28 @@ const ContinueButton = ({
         <span>continue</span>
         <CircleArrowRight />
       </ActionButton>
-    </div>
+    </motion.div>
   );
 };
 
 const KanjiDisplay = ({ payload }: { payload: IKanjiObj }) => (
-  <div className='relative flex aspect-square w-full max-w-[100px] items-center justify-center'>
-    {/* 4-segment square background */}
-    <div className='absolute inset-0 grid grid-cols-2 grid-rows-2 rounded-xl border-1 border-[var(--border-color)] bg-[var(--background-color)]'>
+  <motion.div
+    variants={mainCharVariants}
+    className='relative flex aspect-square w-full max-w-[100px] items-center justify-center'
+    style={{ perspective: 1000 }}
+  >
+    {/* 4-segment square background with subtle animation */}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.1, duration: 0.3 }}
+      className='absolute inset-0 grid grid-cols-2 grid-rows-2 rounded-xl border-1 border-[var(--border-color)] bg-[var(--background-color)]'
+    >
       <div className='border-r border-b border-[var(--border-color)]' />
       <div className='border-b border-[var(--border-color)]' />
       <div className='border-r border-[var(--border-color)]' />
       <div />
-    </div>
+    </motion.div>
 
     <FuriganaText
       text={payload.kanjiChar}
@@ -70,23 +217,37 @@ const KanjiDisplay = ({ payload }: { payload: IKanjiObj }) => (
       className='relative z-10 pb-2 text-7xl'
       lang='ja'
     />
-  </div>
+  </motion.div>
 );
 
 const ReadingsList = ({
   readings,
-  isHidden
+  isHidden,
+  delay = 0
 }: {
   readings: string[];
   isHidden: boolean;
+  delay?: number;
 }) => {
   if (isHidden) return null;
 
   return (
-    <div className='flex h-1/2 flex-row gap-2 rounded-2xl bg-[var(--card-color)]'>
+    <motion.div
+      variants={readingVariants}
+      custom={delay}
+      className='flex h-1/2 flex-row gap-2 rounded-2xl bg-[var(--card-color)]'
+    >
       {readings.slice(0, 2).map((reading, i) => (
-        <span
+        <motion.span
           key={reading}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            type: 'spring',
+            stiffness: 300,
+            damping: 20,
+            delay: delay + i * 0.08
+          }}
           className={clsx(
             'flex flex-row items-center justify-center px-2 py-1 text-sm md:text-base',
             'w-full text-[var(--secondary-color)]',
@@ -95,9 +256,9 @@ const ReadingsList = ({
           )}
         >
           {reading}
-        </span>
+        </motion.span>
       ))}
-    </div>
+    </motion.div>
   );
 };
 
@@ -114,27 +275,40 @@ const KanjiSummary = ({
   buttonRef: React.RefObject<HTMLButtonElement | null>;
   isEmbedded?: boolean;
 }) => (
-  <div className='flex w-full flex-col items-center justify-start gap-4 py-4 md:w-3/4 lg:w-1/2'>
+  <motion.div
+    variants={containerVariants}
+    initial='hidden'
+    animate='visible'
+    className='flex w-full flex-col items-center justify-start gap-4 py-4 md:w-3/4 lg:w-1/2'
+  >
     {!isEmbedded && <FeedbackHeader feedback={feedback} />}
 
-    <div className='flex w-full flex-row gap-4'>
+    <motion.div variants={itemVariants} className='flex w-full flex-row gap-4'>
       <KanjiDisplay payload={payload} />
 
-      <div className='flex w-full flex-col gap-2'>
+      <motion.div
+        variants={containerVariants}
+        className='flex w-full flex-col gap-2'
+      >
         <ReadingsList
           readings={payload.onyomi}
           isHidden={!payload.onyomi[0] || payload.onyomi.length === 0}
+          delay={0.2}
         />
         <ReadingsList
           readings={payload.kunyomi}
           isHidden={!payload.kunyomi[0] || payload.kunyomi.length === 0}
+          delay={0.3}
         />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
 
-    <p className='w-full text-xl text-[var(--secondary-color)] md:text-2xl'>
+    <motion.p
+      variants={meaningVariants}
+      className='w-full text-xl text-[var(--secondary-color)] md:text-2xl'
+    >
       {payload.fullDisplayMeanings.join(', ')}
-    </p>
+    </motion.p>
 
     {!isEmbedded && (
       <ContinueButton
@@ -143,7 +317,7 @@ const KanjiSummary = ({
         disabled={false}
       />
     )}
-  </div>
+  </motion.div>
 );
 
 const VocabSummary = ({
@@ -159,24 +333,39 @@ const VocabSummary = ({
   buttonRef: React.RefObject<HTMLButtonElement | null>;
   isEmbedded?: boolean;
 }) => {
-  const showKana = usePreferencesStore(state => state.displayKana);
+  const { displayKana: showKana } = useThemePreferences();
   const rawReading = payload.reading || '';
   const baseReading = rawReading.split(' ')[1] || rawReading;
   const displayReading = showKana ? toKana(baseReading) : toRomaji(baseReading);
 
   return (
-    <div className='flex w-full flex-col items-center justify-start gap-4 py-4 md:w-3/4 lg:w-1/2'>
+    <motion.div
+      variants={containerVariants}
+      initial='hidden'
+      animate='visible'
+      className='flex w-full flex-col items-center justify-start gap-4 py-4 md:w-3/4 lg:w-1/2'
+    >
       {!isEmbedded && <FeedbackHeader feedback={feedback} />}
 
-      <FuriganaText
-        text={payload.word}
-        reading={payload.reading}
-        className='flex w-full justify-center text-6xl'
-        lang='ja'
-      />
+      <motion.div
+        variants={mainCharVariants}
+        style={{ perspective: 1000 }}
+        className='flex w-full justify-center'
+      >
+        <FuriganaText
+          text={payload.word}
+          reading={payload.reading}
+          className='text-6xl'
+          lang='ja'
+        />
+      </motion.div>
 
-      <div className='flex w-full flex-col items-start gap-2'>
-        <span
+      <motion.div
+        variants={containerVariants}
+        className='flex w-full flex-col items-start gap-2'
+      >
+        <motion.span
+          variants={readingVariants}
           className={clsx(
             'flex flex-row items-center rounded-xl px-2 py-1',
             'bg-[var(--card-color)] text-lg',
@@ -184,11 +373,14 @@ const VocabSummary = ({
           )}
         >
           {displayReading}
-        </span>
-        <p className='text-xl text-[var(--secondary-color)] md:text-2xl'>
+        </motion.span>
+        <motion.p
+          variants={meaningVariants}
+          className='text-xl text-[var(--secondary-color)] md:text-2xl'
+        >
           {payload.displayMeanings.join(', ')}
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       {!isEmbedded && (
         <ContinueButton
@@ -197,7 +389,7 @@ const VocabSummary = ({
           disabled={false}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

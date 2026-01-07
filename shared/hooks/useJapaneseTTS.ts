@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useState, useEffect, useRef } from 'react';
-import usePreferencesStore from '@/features/Preferences/store/usePreferencesStore';
+import { useAudioPreferences } from '@/features/Preferences';
 
 interface JapaneseVoice {
   name: string;
@@ -17,14 +17,8 @@ interface TTSState {
 }
 
 export const useJapaneseTTS = () => {
-  type Prefs = ReturnType<typeof usePreferencesStore.getState>;
-  const silentMode = usePreferencesStore((state: Prefs) => state.silentMode);
-  const pronunciationVoiceName = usePreferencesStore(
-    (state: Prefs) => state.pronunciationVoiceName
-  );
-  const setPronunciationVoiceName = usePreferencesStore(
-    (state: Prefs) => state.setPronunciationVoiceName
-  );
+  const { silentMode, pronunciationVoiceName, setPronunciationVoiceName } =
+    useAudioPreferences();
   const [state, setState] = useState<TTSState>({
     isPlaying: false,
     isSupported: false,
@@ -329,7 +323,7 @@ export const useJapaneseTTS = () => {
         attemptSpeak();
       });
     },
-    [isClient, state.isSupported, silentMode]
+    [isClient, silentMode]
   );
 
   const stop = useCallback(() => {

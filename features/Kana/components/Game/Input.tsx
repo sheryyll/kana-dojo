@@ -2,19 +2,17 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { kana } from '@/features/Kana/data/kana';
 import useKanaStore from '@/features/Kana/store/useKanaStore';
-import { CircleCheck, CircleX, CircleArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import { useClick, useCorrect, useError } from '@/shared/hooks/useAudio';
 // import GameIntel from '@/shared/components/Game/GameIntel';
 import { useStopwatch } from 'react-timer-hook';
 import useStats from '@/shared/hooks/useStats';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import { useShallow } from 'zustand/react/shallow';
 import Stars from '@/shared/components/Game/Stars';
 import { useCrazyModeTrigger } from '@/features/CrazyMode/hooks/useCrazyModeTrigger';
 import { getGlobalAdaptiveSelector } from '@/shared/lib/adaptiveSelection';
-import { ActionButton } from '@/shared/components/ui/ActionButton';
 import { GameBottomBar } from '@/shared/components/Game/GameBottomBar';
 
 // Get the global adaptive selector for weighted character selection
@@ -77,12 +75,12 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
   const { playErrorTwice } = useError();
   const { trigger: triggerCrazyMode } = useCrazyModeTrigger();
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const [inputValue, setInputValue] = useState('');
   const [bottomBarState, setBottomBarState] = useState<BottomBarState>('check');
-  const [lastWrongInput, setLastWrongInput] = useState('');
+  const [_lastWrongInput, setLastWrongInput] = useState('');
 
   const kanaGroupIndices = useKanaStore(state => state.kanaGroupIndices);
 
@@ -123,6 +121,10 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
 
   const targetChar = selectedPairs[correctChar];
 
+  const hasKana = selectedKana.length > 0;
+  const hasRomaji = selectedRomaji.length > 0;
+  const isReady = isReverse ? hasRomaji : hasKana;
+
   useEffect(() => {
     if (inputRef.current && bottomBarState === 'check') {
       inputRef.current.focus();
@@ -157,16 +159,10 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
 
   useEffect(() => {
     if (isHidden) speedStopwatch.pause();
-  }, [isHidden]);
+  }, [isHidden, speedStopwatch]);
 
-  if (
-    (isReverse && (!selectedRomaji || selectedRomaji.length === 0)) ||
-    (!isReverse && (!selectedKana || selectedKana.length === 0))
-  ) {
-    return null;
-  }
-
-  const generateNewCharacter = () => {
+  const generateNewCharacter = useCallback(() => {
+    if (!isReady) return;
     const sourceArray = isReverse ? selectedRomaji : selectedKana;
     // Use weighted selection - prioritizes characters user struggles with
     const newChar = adaptiveSelector.selectWeightedCharacter(
@@ -175,9 +171,9 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
     );
     adaptiveSelector.markCharacterSeen(newChar);
     setCorrectChar(newChar);
-  };
+  }, [isReady, isReverse, selectedRomaji, selectedKana, correctChar]);
 
-  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleEnter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
       e.key === 'Enter' &&
       inputValue.trim().length &&
@@ -259,12 +255,16 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
     setBottomBarState('check');
     speedStopwatch.reset();
     speedStopwatch.start();
-  }, [playClick]);
+  }, [playClick, generateNewCharacter, speedStopwatch]);
 
-  const gameMode = isReverse ? 'reverse input' : 'input';
+  const _gameMode = isReverse ? 'reverse input' : 'input';
   const canCheck = inputValue.trim().length > 0 && bottomBarState !== 'correct';
   const showContinue = bottomBarState === 'correct';
-  const showFeedback = bottomBarState !== 'check';
+  const _showFeedback = bottomBarState !== 'check';
+
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <div
@@ -292,7 +292,7 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
         </motion.p>
       </div>
       <textarea
-        ref={inputRef as any}
+        ref={inputRef}
         value={inputValue}
         placeholder='Type your answer...'
         disabled={showContinue}
@@ -311,7 +311,7 @@ const InputGame = ({ isHidden, isReverse = false }: InputGameProps) => {
         onKeyDown={e => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            handleEnter(e as any);
+            handleEnter(e);
           }
         }}
       />

@@ -1,8 +1,8 @@
 'use client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import useKanaStore from '@/features/Kana/store/useKanaStore';
-import useKanjiStore from '@/features/Kanji/store/useKanjiStore';
-import useVocabStore from '@/features/Vocabulary/store/useVocabStore';
+import { useKanaSelection } from '@/features/Kana';
+import { useKanjiSelection } from '@/features/Kanji';
+import { useVocabSelection } from '@/features/Vocabulary';
 import { getSelectionLabels } from '@/shared/lib/selectionFormatting';
 import {
   MousePointerClick,
@@ -14,11 +14,9 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useClick } from '@/shared/hooks/useAudio';
-import { useShallow } from 'zustand/react/shallow';
 import { Link, useRouter } from '@/core/i18n/routing';
 
 import { ActionButton } from '@/shared/components/ui/ActionButton';
-import { cn } from '@/shared/lib/utils';
 
 interface GameModesProps {
   isOpen: boolean;
@@ -64,32 +62,21 @@ const GameModes = ({
     setChallengeDuration(Number.isFinite(parsed) ? parsed : 60);
   }, [isOpen, mode, durationStorageKey, persistDuration]);
 
-  const { selectedGameModeKana, setSelectedGameModeKana, kanaGroupIndices } =
-    useKanaStore(
-      useShallow(state => ({
-        selectedGameModeKana: state.selectedGameModeKana,
-        setSelectedGameModeKana: state.setSelectedGameModeKana,
-        kanaGroupIndices: state.kanaGroupIndices
-      }))
-    );
+  const kanaSelection = useKanaSelection();
+  const kanjiSelection = useKanjiSelection();
+  const vocabSelection = useVocabSelection();
 
-  const { selectedGameModeKanji, setSelectedGameModeKanji, selectedKanjiSets } =
-    useKanjiStore(
-      useShallow(state => ({
-        selectedGameModeKanji: state.selectedGameModeKanji,
-        setSelectedGameModeKanji: state.setSelectedGameModeKanji,
-        selectedKanjiSets: state.selectedKanjiSets
-      }))
-    );
+  const selectedGameModeKana = kanaSelection.gameMode;
+  const setSelectedGameModeKana = kanaSelection.setGameMode;
+  const kanaGroupIndices = kanaSelection.selectedGroupIndices;
 
-  const { selectedGameModeVocab, setSelectedGameModeVocab, selectedVocabSets } =
-    useVocabStore(
-      useShallow(state => ({
-        selectedGameModeVocab: state.selectedGameModeVocab,
-        setSelectedGameModeVocab: state.setSelectedGameModeVocab,
-        selectedVocabSets: state.selectedVocabSets
-      }))
-    );
+  const selectedGameModeKanji = kanjiSelection.gameMode;
+  const setSelectedGameModeKanji = kanjiSelection.setGameMode;
+  const selectedKanjiSets = kanjiSelection.selectedSets;
+
+  const selectedGameModeVocab = vocabSelection.gameMode;
+  const setSelectedGameModeVocab = vocabSelection.setGameMode;
+  const selectedVocabSets = vocabSelection.selectedSets;
 
   // Get formatted selection labels
   const { full: kanaGroupNamesFull, compact: kanaGroupNamesCompact } =
@@ -195,10 +182,16 @@ const GameModes = ({
           {/* Header */}
           <div className='space-y-3 text-center'>
             {mode === 'blitz' && (
-              <Zap size={56} className='mx-auto text-[var(--secondary-color)]' />
+              <Zap
+                size={56}
+                className='mx-auto text-[var(--secondary-color)]'
+              />
             )}
             {mode === 'train' && (
-              <Play size={56} className='mx-auto text-[var(--secondary-color)]' />
+              <Play
+                size={56}
+                className='mx-auto text-[var(--secondary-color)]'
+              />
             )}
             <h1 className='text-2xl font-bold text-[var(--main-color)]'>
               {dojoLabel}{' '}

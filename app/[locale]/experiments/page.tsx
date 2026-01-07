@@ -118,7 +118,7 @@ export default function ExperimentsPage() {
             href={exp.href}
             onClick={() => playClick()}
             className={clsx(
-              'flex flex-col gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-6 transition-all duration-250 hover:border-[var(--main-color)]'
+              'flex cursor-pointer flex-col gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-6 transition-all duration-250 hover:border-[var(--main-color)]'
             )}
           >
             {exp.charIcon ? (

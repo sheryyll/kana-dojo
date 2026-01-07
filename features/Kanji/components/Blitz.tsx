@@ -4,7 +4,7 @@ import React from 'react';
 import useKanjiStore, {
   type IKanjiObj
 } from '@/features/Kanji/store/useKanjiStore';
-import useStatsStore from '@/features/Progress/store/useStatsStore';
+import { useStatsStore } from '@/features/Progress';
 import Blitz, { type BlitzConfig } from '@/shared/components/Blitz';
 import { getSelectionLabels } from '@/shared/lib/selectionFormatting';
 import { Random } from 'random-js';
@@ -50,10 +50,15 @@ export default function BlitzKanji() {
     checkAnswer: (question, answer, isReverse) => {
       if (!isReverse) {
         // Reverse: answer should be the kanji character or kunyomi or onyomi
-        return (answer.trim() === question.kanjiChar ||  question.kunyomi.some(k => k.split(' ')[0] === answer)||question.onyomi.some(k => k.split(' ')[0] === answer)||question.meanings.some(
-        meaning => answer.toLowerCase() === meaning.toLowerCase()
-      ));
-    }
+        return (
+          answer.trim() === question.kanjiChar ||
+          question.kunyomi.some(k => k.split(' ')[0] === answer) ||
+          question.onyomi.some(k => k.split(' ')[0] === answer) ||
+          question.meanings.some(
+            meaning => answer.toLowerCase() === meaning.toLowerCase()
+          )
+        );
+      }
       // Normal: answer should match any meaning
       return question.meanings.some(
         meaning => answer.toLowerCase() === meaning.toLowerCase()
