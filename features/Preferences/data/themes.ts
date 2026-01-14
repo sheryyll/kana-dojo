@@ -242,6 +242,12 @@ const baseThemeSets: BaseThemeGroup[] = [
     icon: Moon,
     themes: [
       {
+        id: 'origami-crane',
+        backgroundColor: 'oklch(95.0% 0.008 90.0 / 1)',
+        mainColor: 'oklch(55.0% 0.220 25.0 / 1)',
+        secondaryColor: 'oklch(45.0% 0.150 20.0 / 1)'
+      },
+      {
         id: 'matcha-cream',
         backgroundColor: 'oklch(92.0% 0.025 140.0 / 1)',
         mainColor: 'oklch(55.0% 0.180 140.0 / 1)',
