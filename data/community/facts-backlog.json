@@ -66,12 +66,15 @@
   {
     "id": 12,
     "fact": "The word 'bakku-shan' (バックシャン) describes someone who looks attractive from behind but not from the front - a uniquely specific observation.",
-    "issued": true
+    "issued": true,
+    "completed": true,
+    "completedBy": "Regyl",
+    "completedPR": 511
   },
   {
     "id": 13,
     "fact": "Japanese police use giant futon-like blankets called 'sasumata' to safely pin suspects against walls, a technique dating back to the Edo period.",
-    "issued": false
+    "issued": true
   },
   {
     "id": 14,
