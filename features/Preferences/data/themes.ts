@@ -242,6 +242,12 @@ const baseThemeSets: BaseThemeGroup[] = [
     icon: Moon,
     themes: [
       {
+        id: 'shibuya-nights',
+        backgroundColor: 'oklch(12.0% 0.045 290.0 / 1)',
+        mainColor: 'oklch(78.0% 0.225 330.0 / 1)',
+        secondaryColor: 'oklch(82.0% 0.180 200.0 / 1)'
+      },
+      {
         id: 'koi-pond',
         backgroundColor: 'oklch(20.0% 0.048 240.0 / 1)',
         mainColor: 'oklch(80.0% 0.175 55.0 / 1)',
