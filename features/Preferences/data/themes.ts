@@ -237,6 +237,10 @@ const baseThemeSets: BaseThemeGroup[] = [
         secondaryColor: 'oklch(66.54% 0.2210 304.03 / 1)',
       },
       {
+        id: 'lucky-cat',
+        backgroundColor: 'oklch(92.0% 0.025 90.0 / 1)',
+        mainColor: 'oklch(65.0% 0.195 40.0 / 1)',
+        secondaryColor: 'oklch(75.0% 0.145 85.0 / 1)'},{
         id: 'soda-float',
         backgroundColor: 'oklch(93.0% 0.032 150.0 / 1)',
         mainColor: 'oklch(62.0% 0.175 155.0 / 1)',
@@ -1095,20 +1099,26 @@ const baseThemeSets: BaseThemeGroup[] = [
         secondaryColor: 'oklch(68.0% 0.205 30.0 / 1)',
       },
       {
-        id: 'tanuki-mischief',
-        backgroundColor: 'oklch(22.0% 0.042 55.0 / 1)',
-        mainColor: 'oklch(68.0% 0.125 65.0 / 1)',
-        secondaryColor: 'oklch(72.0% 0.155 145.0 / 1)',
-      },{
+        id: 'castle-gate',
+        backgroundColor: 'oklch(23.0% 0.018 75.0 / 1)',
+        mainColor: 'oklch(70.0% 0.055 80.0 / 1)',
+          secondaryColor: 'oklch(60.0% 0.145 25.0 / 1)'},{
+        id: 'onsen-steam',
+        backgroundColor: 'oklch(25.0% 0.022 210.0 / 1)',
+        mainColor: 'oklch(85.0% 0.085 215.0 / 1)',
+        secondaryColor: 'oklch(70.0% 0.065 195.0 / 1)'},{
+        id: 'sunset-train',
+        backgroundColor: 'oklch(22.0% 0.052 45.0 / 1)',
+        mainColor: 'oklch(88.0% 0.165 65.0 / 1)',
+        secondaryColor: 'oklch(72.0% 0.185 35.0 / 1)'},{
+        id: 'lavender-fields',
+        backgroundColor: 'oklch(19.0% 0.058 290.0 / 1)',
+        mainColor: 'oklch(70.0% 0.165 295.0 / 1)',
+        secondaryColor: 'oklch(80.0% 0.125 285.0 / 1)'},{
         id: 'bamboo-forest',
         backgroundColor: 'oklch(21.0% 0.045 155.0 / 1)',
         mainColor: 'oklch(70.0% 0.145 150.0 / 1)',
         secondaryColor: 'oklch(78.0% 0.095 140.0 / 1)',
-      },{
-        id: 'kimono-silk',
-        backgroundColor: 'oklch(19.0% 0.048 320.0 / 1)',
-        mainColor: 'oklch(72.0% 0.155 330.0 / 1)',
-        secondaryColor: 'oklch(80.0% 0.125 60.0 / 1)',
       },
       {
         id: 'umbrella-rain',
