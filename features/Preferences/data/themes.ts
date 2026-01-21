@@ -255,6 +255,12 @@ const baseThemeSets: BaseThemeGroup[] = [
     icon: Moon,
     themes: [
       {
+        id: 'holographic-idol',
+        backgroundColor: 'oklch(14.0% 0.065 300.0 / 1)',
+        mainColor: 'oklch(82.0% 0.185 200.0 / 1)',
+        secondaryColor: 'oklch(78.0% 0.210 330.0 / 1)'
+      },
+      {
         id: 'yakuza-tattoo',
         backgroundColor: 'oklch(17.0% 0.045 255.0 / 1)',
         mainColor: 'oklch(62.0% 0.185 220.0 / 1)',
