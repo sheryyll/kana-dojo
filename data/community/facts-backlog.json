@@ -663,7 +663,7 @@
   {
     "id": 91,
     "fact": "There's a Japanese word 'shinpai' (心配) that describes worry with a sense of caring - unlike English, it's not purely negative.",
-    "issued": true
+    "issued": false
   },
   {
     "id": 92,
@@ -719,12 +719,12 @@
   {
     "id": 101,
     "fact": "The Japanese concept 'meibutsu' (名物) refers to famous local products - every region has foods and crafts found nowhere else.",
-    "issued": false
+    "issued": true
   },
   {
     "id": 102,
     "fact": "Japan has professional apology agencies where you can hire someone to apologize on your behalf for serious personal matters.",
-    "issued": false
+    "issued": true
   },
   {
     "id": 103,
