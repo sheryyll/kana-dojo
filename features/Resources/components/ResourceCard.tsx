@@ -192,11 +192,6 @@ export function ResourceCard({
           )}
         >
           {resource.name}
-          {resource.nameJa && (
-            <span className='ml-3 font-medium text-[var(--secondary-color)] opacity-50'>
-              {resource.nameJa}
-            </span>
-          )}
         </h3>
 
         <p

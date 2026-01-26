@@ -153,7 +153,7 @@ export const ResourceDetailModal = memo(function ResourceDetailModal({
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={onClose}>
       <DialogPrimitive.Portal forceMount>
-        <DialogPrimitive.Overlay className='fixed inset-0 z-50 bg-[var(--background-color)]/90' />
+        <DialogPrimitive.Overlay className='fixed inset-0 z-50 bg-black/80' />
         <DialogPrimitive.Content
           className='fixed top-1/2 left-1/2 z-50 flex max-h-[85vh] w-[95vw] max-w-4xl -translate-x-1/2 -translate-y-1/2 flex-col gap-0 rounded-2xl border-0 border-[var(--border-color)] bg-[var(--background-color)] p-0 selection:bg-[var(--main-color)] selection:text-[var(--background-color)] sm:max-h-[80vh] sm:w-[90vw]'
           onOpenAutoFocus={e => e.preventDefault()}
@@ -183,11 +183,6 @@ export const ResourceDetailModal = memo(function ResourceDetailModal({
           >
             <DialogPrimitive.Title className='mb-12 flex flex-col text-4xl leading-tight font-black tracking-tighter text-[var(--main-color)] md:text-6xl'>
               <span>{resource.name}</span>
-              {resource.nameJa && (
-                <span className='mt-2 text-2xl font-medium text-[var(--secondary-color)] opacity-30 md:text-3xl'>
-                  {resource.nameJa}
-                </span>
-              )}
             </DialogPrimitive.Title>
 
             <div className='grid grid-cols-1 gap-16 lg:grid-cols-12'>

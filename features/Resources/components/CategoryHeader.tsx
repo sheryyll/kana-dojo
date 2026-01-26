@@ -49,11 +49,6 @@ export function CategoryHeader({
           </div>
           <h1 className='text-5xl leading-none font-black tracking-tighter text-[var(--main-color)] md:text-7xl'>
             {category.name}
-            {category.nameJa && (
-              <span className='ml-4 text-3xl font-medium text-[var(--secondary-color)] opacity-30 md:text-5xl'>
-                {category.nameJa}
-              </span>
-            )}
           </h1>
         </div>
       </div>
