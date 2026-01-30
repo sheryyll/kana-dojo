@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import useOnboardingStore from '@/shared/store/useOnboardingStore';
 import { themeSets, useThemePreferences } from '@/features/Preferences';
+import { isRecommendedFont } from '@/features/Preferences/data/recommendedFonts';
 import { useClick } from '@/shared/hooks/useAudio';
 import { cardBorderStyles } from '@/shared/lib/styles';
 import { modalFonts } from '@/shared/components/Modals/data/modalFonts';
@@ -173,7 +174,7 @@ const WelcomeModal = () => {
               </div>
 
               <ActionButton
-                className='py-4 text-xl'
+                className='py-4 text-xl font-semibold tracking-wide uppercase'
                 borderRadius='3xl'
                 borderBottomThickness={8}
                 onClick={() => {
@@ -479,41 +480,43 @@ const WelcomeModal = () => {
 
             <div className='scrollbar-thin scrollbar-thumb-[var(--border-color)] scrollbar-track-transparent max-h-80 space-y-4 overflow-y-auto p-1 pr-2'>
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                {modalFonts.map((fontObj: (typeof modalFonts)[number]) => (
-                  <button
-                    key={fontObj.name}
-                    className={clsx(
-                      'flex cursor-pointer items-center justify-center overflow-hidden rounded-xl border-0 bg-[var(--card-color)] px-4 py-4 transition-all duration-200 hover:opacity-90 active:scale-95',
-                      localFont === fontObj.name
-                        ? 'border-[var(--main-color)]'
-                        : 'border-[var(--card-color)]',
-                    )}
-                    onClick={() => {
-                      playClick();
-                      setLocalFont(fontObj.name);
-                      setFont(fontObj.name);
-                    }}
-                  >
-                    <p
+                {modalFonts
+                  .filter(fontObj => isRecommendedFont(fontObj.name))
+                  .map((fontObj: (typeof modalFonts)[number]) => (
+                    <button
+                      key={fontObj.name}
                       className={clsx(
-                        'text-center text-xl',
-                        fontObj.font.className,
+                        'flex cursor-pointer items-center justify-center overflow-hidden rounded-xl border-0 bg-[var(--card-color)] px-4 py-4 transition-all duration-200 hover:opacity-90 active:scale-95',
+                        localFont === fontObj.name
+                          ? 'border-[var(--main-color)]'
+                          : 'border-[var(--card-color)]',
                       )}
+                      onClick={() => {
+                        playClick();
+                        setLocalFont(fontObj.name);
+                        setFont(fontObj.name);
+                      }}
                     >
-                      <span className='text-[var(--secondary-color)]'>
-                        {localFont === fontObj.name ? '\u2B24 ' : ''}
-                      </span>
-                      <span className='text-[var(--main-color)]'>
-                        {fontObj.name}
-                        {fontObj.name === 'Zen Maru Gothic' &&
-                          ` ${t('steps.fonts.default')}`}
-                      </span>
-                      <span className='ml-2 text-[var(--secondary-color)]'>
-                        かな道場
-                      </span>
-                    </p>
-                  </button>
-                ))}
+                      <p
+                        className={clsx(
+                          'text-center text-xl',
+                          fontObj.font.className,
+                        )}
+                      >
+                        <span className='text-[var(--secondary-color)]'>
+                          {localFont === fontObj.name ? '\u2B24 ' : ''}
+                        </span>
+                        <span className='text-[var(--main-color)]'>
+                          {fontObj.name}
+                          {fontObj.name === 'Zen Maru Gothic' &&
+                            ` ${t('steps.fonts.default')}`}
+                        </span>
+                        <span className='ml-2 text-[var(--secondary-color)]'>
+                          かな道場
+                        </span>
+                      </p>
+                    </button>
+                  ))}
               </div>
               <div className='mt-4 rounded-lg bg-[var(--secondary-color)] p-3 text-center'>
                 <p className='text-sm text-[var(--background-color)]'>
